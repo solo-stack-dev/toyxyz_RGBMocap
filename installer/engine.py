@@ -73,7 +73,7 @@ def validate_package(p):
     if Path(p['filename']).name!=p['filename'] or not p['filename'].endswith('.whl'):raise ValueError('Invalid wheel filename')
     if p.get('url'):
         u=urllib.parse.urlsplit(p['url'])
-        if u.scheme!='https' or u.hostname not in {'files.pythonhosted.org','download.pytorch.org','download-r2.pytorch.org'}:
+        if u.scheme!='https' or u.hostname not in {'files.pythonhosted.org','download.pytorch.org','download-r2.pytorch.org','stable.repo.amd.com'}:
             raise ValueError('Unapproved package source')
 
 def download(p,cache,cancel,completed,total):
@@ -157,8 +157,14 @@ def prune_runtime(folder):
             p=Path(current)/name
             if p.suffix.lower() in {'.lib','.exp','.pdb','.obj','.o','.a','.ilk','.pyc','.pyo'}:p.unlink()
 
+def staging(setup,lock):
+    # Short on purpose: ROCm's kernel libraries nest up to 152 characters
+    # below site-packages, and Windows rejects paths over 260 characters
+    # unless long paths are enabled system-wide.
+    return setup/'st'/lock['id'][:12]
+
 def install_runtimes(root,resources,lock,cancel,reused=None):
-    setup=inside(root,root/'.setup');stage=inside(setup,setup/'staging'/lock['id']);stage.mkdir(parents=True,exist_ok=True)
+    setup=inside(root,root/'.setup');stage=inside(setup,staging(setup,lock));stage.mkdir(parents=True,exist_ok=True)
     logs=setup/'logs';logs.mkdir(exist_ok=True);cache=setup/'downloads';cache.mkdir(exist_ok=True);uv=resources/'uv.exe'
     if sha(uv)!=lock['uv_sha256']:raise ValueError('Setup helper verification failed')
     reused=reused or {}
@@ -261,7 +267,7 @@ def main():
     # A retry can reuse or clear its own existing temporary files. Existing
     # application runtimes are renamed on commit, not copied a second time.
     reusable=0
-    for folder in (setup/'downloads',setup/'staging'/lock['id'],setup/'python',setup/'tmp'):
+    for folder in (setup/'downloads',staging(setup,lock),setup/'python',setup/'tmp'):
         if folder.exists():
             inside(setup,folder)
             reusable+=sum(p.stat().st_size for p in folder.rglob('*') if p.is_file() and not p.is_symlink())

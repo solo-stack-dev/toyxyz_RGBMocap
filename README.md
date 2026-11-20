@@ -5,6 +5,12 @@
 A native Windows app that turns video into editable human animation. Review and
 export motion with AI processing running locally.
 
+> **AMD Radeon build.** This fork runs on AMD Radeon GPUs (tested: RX 7900 XTX)
+> through AMD's PyTorch build for Windows (ROCm) instead of NVIDIA CUDA. Read
+> [AMD Radeon build](docs/AMD.md) for the supported GPUs, what changed and what
+> has been verified. For an NVIDIA GPU, use the original
+> [toyxyz/toyxyz_RGBMocap](https://github.com/toyxyz/toyxyz_RGBMocap).
+
 ## Sample videos
 
 ### Motion capture
@@ -41,7 +47,7 @@ https://github.com/user-attachments/assets/3353f5ca-6393-40af-822f-210a77f51003
    in a writable folder where you want to install RGB MoCap, then clone the repository:
 
    ```cmd
-   git clone https://github.com/toyxyz/toyxyz_RGBMocap.git
+   git clone https://github.com/solo-stack-dev/toyxyz_RGBMocap.git
    cd toyxyz_RGBMocap
    ```
 
@@ -84,15 +90,16 @@ you use them, after the base installation:
 | PromptHMR | `Setup_PromptHMR.cmd` | [PromptHMR guide](docs/models/PROMPTHMR.md) |
 | GEM-X | `Setup_GEMX.cmd` | [GEM-X guide](docs/models/GEMX.md) |
 
-MAMMA and PromptHMR require **Visual Studio 2022 C++ Build Tools**, the Windows SDK and
-**CUDA Toolkit 12.8** for local native builds. Close the app and review the
+MAMMA and PromptHMR require **Visual Studio 2022 or newer** with **Desktop development
+with C++** and a Windows SDK for local native builds. No CUDA Toolkit is needed: setup
+downloads AMD's ROCm compiler itself (about 4.5 GiB, once). Close the app and review the
 provider terms before setup. Then reopen it and prepare the selected model's
 files in **Model Manager**. Their optional runtimes do not require each other;
 `install.cmd` and `update.cmd` do not install them.
 
 GEM-X uses the existing ExMR Python base with its own pinned inference packages.
 Run its separate setup after `install.cmd`, then prepare its public files in
-**Model Manager**. It does not require the C++ build tools or CUDA Toolkit.
+**Model Manager**. It does not require the C++ build tools.
 
 PEAR reuses the base shared runtime with a small support overlay prepared by
 `install.cmd` and `update.cmd`. No separate setup or compiler is required.
@@ -128,8 +135,8 @@ Tell me when I need to sign in, accept provider terms or download a file manuall
 For multi-camera capture, add:
 
 ```text
-Also enable MAMMA. Follow docs/MAMMA_AGENT_SETUP.md to check the C++/CUDA tools,
-run Setup_MAMMA.cmd after the required license review, and verify the native CUDA
+Also enable MAMMA. Follow docs/MAMMA_AGENT_SETUP.md to check the C++ build tools,
+run Setup_MAMMA.cmd after the required license review, and verify the native GPU
 modules. Help me prepare its models without changing the other model runtimes.
 ```
 
@@ -137,8 +144,8 @@ For PromptHMR instead, add:
 
 ```text
 Also enable PromptHMR. Follow docs/models/PROMPTHMR.md and docs/AGENT_GUIDE.md.
-Check the C++/CUDA tools, run Setup_PromptHMR.cmd after the required license
-review, verify its CUDA checks, and help prepare the exact Model Manager files.
+Check the C++ build tools, run Setup_PromptHMR.cmd after the required license
+review, verify its GPU checks, and help prepare the exact Model Manager files.
 Keep other runtimes and existing projects unchanged.
 ```
 
@@ -209,7 +216,8 @@ motion quality was lower than **ExMR**. It does not support finger tracking.
 | [PromptHMR](https://github.com/yufu-wang/PromptHMR) | SMPL-X | Not generated | [PromptHMR guide](docs/models/PROMPTHMR.md) |
 | [GEM-X](https://github.com/NVlabs/GEM-X) · fast processing, relatively low motion quality in our tests | SOMA Native77 | Included | [GEM-X guide](docs/models/GEMX.md) |
 
-Requires 64-bit Windows, a compatible NVIDIA GPU/driver and OpenGL 4.3.
+Requires 64-bit Windows, an AMD Radeon RX 7900-series GPU (gfx1100) with a current
+Adrenalin driver, and OpenGL 4.3. See [AMD Radeon build](docs/AMD.md).
 Model files are acquired separately; some require registration and license acceptance.
 
 **Installed models and runtimes:** approximately **77.8 GB (72.5 GiB)** for the
@@ -226,8 +234,8 @@ projects, caches or retained downloads; shared files are counted once.
 | PEAR live preview, additional | Small support overlay; shared runtime reused | ~2.84 GiB | ~2.85 GiB |
 
 Including PEAR, the estimated combined model/runtime total is about
-**75.31 GiB (80.9 GB)**, before the additional space listed below. If GEM-X
-cannot share the verified CUDA DLLs, add about **2.95 GiB**. GeoCalib weights
+**75.31 GiB (80.9 GB)**, before the additional space listed below. On the AMD build, GEM-X keeps its own
+ROCm libraries; see the measured sizes in [AMD Radeon build](docs/AMD.md). GeoCalib weights
 (about **0.11 GiB**) are shared by MAMMA and PEAR and counted once; both also reuse VGGT. See the
 [PEAR camera guide](docs/models/PEAR.md#multiple-fixed-cameras-and-camera-align).
 
@@ -239,7 +247,7 @@ native modules and **1.55 GiB** of weights beyond these totals; see its model gu
 [above](#optional-model-runtimes). They are not installed by `install.cmd` or
 `update.cmd`; obtain weights separately in Model Manager.
 
-App source, C++/CUDA compiler tools, installation temporary files and saved work
+App source, C++ and ROCm compiler tools, installation temporary files and saved work
 need additional space. These are measured sizes, not a setup free-space guarantee.
 See [storage and installation details](docs/USER_GUIDE.md#installed-size).
 

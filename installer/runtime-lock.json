@@ -36,6 +36,30 @@
           "bytes": 7490
         },
         {
+          "name": "amd-torch-device-gfx1100",
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "amd_torch_device_gfx1100-2.14.0+rocm10.1.0-cp310-cp310-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx1100/amd_torch_device_gfx1100-2.14.0%2Brocm10.1.0-cp310-cp310-win_amd64.whl",
+          "sha256": "0064b1ab7d4e0dd15f0469abee0efbaca31f56da649a60466a28fc43d77397ea",
+          "bytes": 50352469
+        },
+        {
+          "name": "amd-torch-device-gfx110x",
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "amd_torch_device_gfx110x-2.14.0+rocm10.1.0-cp310-cp310-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx110x/amd_torch_device_gfx110x-2.14.0%2Brocm10.1.0-cp310-cp310-win_amd64.whl",
+          "sha256": "937f30e06ae3b541aca10c10bafe303110f1bb8b13492630b5ce5ec6d23e3d20",
+          "bytes": 307045455
+        },
+        {
+          "name": "amd-torchvision-device-gfx1100",
+          "version": "0.29.0a0+rocm10.1.0",
+          "filename": "amd_torchvision_device_gfx1100-0.29.0a0+rocm10.1.0-cp310-cp310-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torchvision-device-gfx1100/amd_torchvision_device_gfx1100-0.29.0a0%2Brocm10.1.0-cp310-cp310-win_amd64.whl",
+          "sha256": "fb4bb5396b5fc636e89b61f2fecdf984067131a364325346ef804a8bcc0b6620",
+          "bytes": 139039
+        },
+        {
           "name": "antlr4-python3-runtime",
           "version": "4.9.3",
           "filename": "antlr4_python3_runtime-4.9.3-py3-none-any.whl",
@@ -568,6 +592,48 @@
           "bytes": 310654
         },
         {
+          "name": "rocm",
+          "version": "10.1.0",
+          "filename": "rocm-10.1.0-py3-none-any.whl",
+          "url": null,
+          "bundled": "wheels/rocm-10.1.0-py3-none-any.whl",
+          "origin": "AMD's rocm meta package, published only as an sdist; repacked by tools/make_rocm_meta_source.py without running setup.py",
+          "sha256": "7ea52cf6bea78e1bcecaa6920ebc98f702d07e685000815166706966e5dd9e51",
+          "bytes": 18600
+        },
+        {
+          "name": "rocm-bootstrap",
+          "version": "0.3.0",
+          "filename": "rocm_bootstrap-0.3.0-py3-none-any.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-bootstrap/rocm_bootstrap-0.3.0-py3-none-any.whl",
+          "sha256": "62d0160ecdd86f7132dbab9aec257cb2c96327df2592b0633aa6bb56399cc095",
+          "bytes": 30532
+        },
+        {
+          "name": "rocm-sdk-core",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-core/rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "b12f1c4cde14ed1cd8864006d17586c6b1e6a4e4695b9597cfe04ed7715e952f",
+          "bytes": 776978384
+        },
+        {
+          "name": "rocm-sdk-device-gfx1100",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-device-gfx1100/rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "89b6fc9b76c0ea8cbf437e53c5bf0cd992a2f642ec6ddd34829a94f07f89b0b0",
+          "bytes": 201201815
+        },
+        {
+          "name": "rocm-sdk-libraries",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-libraries/rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "0c34bafbb4aa626cc710d8b130bb314f591194c3d79eeb5892b755ea0be06159",
+          "bytes": 118645973
+        },
+        {
           "name": "safetensors",
           "version": "0.8.0",
           "filename": "safetensors-0.8.0-cp310-abi3-win_amd64.whl",
@@ -673,11 +739,11 @@
         },
         {
           "name": "torch",
-          "version": "2.7.1+cu128",
-          "filename": "torch-2.7.1+cu128-cp310-cp310-win_amd64.whl",
-          "url": "https://download-r2.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp310-cp310-win_amd64.whl",
-          "sha256": "5174f02de8ca14df87c8e333c4c39cf3ce93a323c9d470d690301d110a053b3c",
-          "bytes": 3273064440
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "torch-2.14.0+rocm10.1.0-cp310-cp310-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/torch/torch-2.14.0%2Brocm10.1.0-cp310-cp310-win_amd64.whl",
+          "sha256": "e4a02819acb3d8c0c8fa789ce873eb20239136ec2d64e3d8a6a3b0916bdaa2dc",
+          "bytes": 115519400
         },
         {
           "name": "torchmetrics",
@@ -689,11 +755,11 @@
         },
         {
           "name": "torchvision",
-          "version": "0.22.1+cu128",
-          "filename": "torchvision-0.22.1+cu128-cp310-cp310-win_amd64.whl",
-          "url": "https://download-r2.pytorch.org/whl/cu128/torchvision-0.22.1%2Bcu128-cp310-cp310-win_amd64.whl",
-          "sha256": "ad48ba3c3ffd48027e3a8de42fcea131a53a524ee9416ca4efb22f9ac6b7328d",
-          "bytes": 7638365
+          "version": "0.29.0a0+rocm10.1.0",
+          "filename": "torchvision-0.29.0a0+rocm10.1.0-cp310-cp310-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/torchvision/torchvision-0.29.0a0%2Brocm10.1.0-cp310-cp310-win_amd64.whl",
+          "sha256": "133bf62575df153cd2da2dbb1ea1c262a9c1f3652ccd9d63870901da45cdac7c",
+          "bytes": 944908
         },
         {
           "name": "tqdm",
@@ -1568,6 +1634,30 @@
           "bytes": 7490
         },
         {
+          "name": "amd-torch-device-gfx1100",
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "amd_torch_device_gfx1100-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx1100/amd_torch_device_gfx1100-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+          "sha256": "659a961e646345fe330aca0b36a1e7e84ef6f15cef2848ccdb9b3fb64bf0e401",
+          "bytes": 50351828
+        },
+        {
+          "name": "amd-torch-device-gfx110x",
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "amd_torch_device_gfx110x-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx110x/amd_torch_device_gfx110x-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+          "sha256": "7f48df45ea1916e311c97528acc4ce3b966482dd2095216909694400ff315942",
+          "bytes": 307045455
+        },
+        {
+          "name": "amd-torchvision-device-gfx1100",
+          "version": "0.29.0a0+rocm10.1.0",
+          "filename": "amd_torchvision_device_gfx1100-0.29.0a0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torchvision-device-gfx1100/amd_torchvision_device_gfx1100-0.29.0a0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+          "sha256": "a422f419831c776d612cd018553c46fdfc32a7aa89124827fd6e4c4ea53416cf",
+          "bytes": 139045
+        },
+        {
           "name": "anyio",
           "version": "4.15.1",
           "filename": "anyio-4.15.1-py3-none-any.whl",
@@ -2050,6 +2140,48 @@
           "bytes": 310654
         },
         {
+          "name": "rocm",
+          "version": "10.1.0",
+          "filename": "rocm-10.1.0-py3-none-any.whl",
+          "url": null,
+          "bundled": "wheels/rocm-10.1.0-py3-none-any.whl",
+          "origin": "AMD's rocm meta package, published only as an sdist; repacked by tools/make_rocm_meta_source.py without running setup.py",
+          "sha256": "7ea52cf6bea78e1bcecaa6920ebc98f702d07e685000815166706966e5dd9e51",
+          "bytes": 18600
+        },
+        {
+          "name": "rocm-bootstrap",
+          "version": "0.3.0",
+          "filename": "rocm_bootstrap-0.3.0-py3-none-any.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-bootstrap/rocm_bootstrap-0.3.0-py3-none-any.whl",
+          "sha256": "62d0160ecdd86f7132dbab9aec257cb2c96327df2592b0633aa6bb56399cc095",
+          "bytes": 30532
+        },
+        {
+          "name": "rocm-sdk-core",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-core/rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "b12f1c4cde14ed1cd8864006d17586c6b1e6a4e4695b9597cfe04ed7715e952f",
+          "bytes": 776978384
+        },
+        {
+          "name": "rocm-sdk-device-gfx1100",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-device-gfx1100/rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "89b6fc9b76c0ea8cbf437e53c5bf0cd992a2f642ec6ddd34829a94f07f89b0b0",
+          "bytes": 201201815
+        },
+        {
+          "name": "rocm-sdk-libraries",
+          "version": "10.1.0",
+          "filename": "rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-libraries/rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+          "sha256": "0c34bafbb4aa626cc710d8b130bb314f591194c3d79eeb5892b755ea0be06159",
+          "bytes": 118645973
+        },
+        {
           "name": "roma",
           "version": "1.5.6",
           "filename": "roma-1.5.6-py3-none-any.whl",
@@ -2123,11 +2255,11 @@
         },
         {
           "name": "torch",
-          "version": "2.8.0+cu128",
-          "filename": "torch-2.8.0+cu128-cp312-cp312-win_amd64.whl",
-          "url": "https://download-r2.pytorch.org/whl/cu128/torch-2.8.0%2Bcu128-cp312-cp312-win_amd64.whl",
-          "sha256": "0ad925202387f4e7314302a1b4f8860fa824357f9b1466d7992bf276370ebcff",
-          "bytes": 3461384651
+          "version": "2.14.0+rocm10.1.0",
+          "filename": "torch-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/torch/torch-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+          "sha256": "81e26c307846267d9490ff8c7421382b954909772abb7770a16baec740f44e4b",
+          "bytes": 115562766
         },
         {
           "name": "torchmetrics",
@@ -2139,11 +2271,11 @@
         },
         {
           "name": "torchvision",
-          "version": "0.23.0+cu128",
-          "filename": "torchvision-0.23.0+cu128-cp312-cp312-win_amd64.whl",
-          "url": "https://download-r2.pytorch.org/whl/cu128/torchvision-0.23.0%2Bcu128-cp312-cp312-win_amd64.whl",
-          "sha256": "20fa9c7362a006776630b00b8a01919fedcf504a202b81358d32c5aef39956fe",
-          "bytes": 7540039
+          "version": "0.29.0a0+rocm10.1.0",
+          "filename": "torchvision-0.29.0a0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+          "url": "https://stable.repo.amd.com/rocm/whl-next/torchvision/torchvision-0.29.0a0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+          "sha256": "6ff0680fe9c8f06b7f039ab63981b44022342d638687dbaa70352e8b3e8b46a6",
+          "bytes": 944909
         },
         {
           "name": "tqdm",
@@ -2237,13 +2369,13 @@
       "base": null
     }
   ],
-  "download_bytes": 7606248569,
+  "download_bytes": 2796665452,
   "installed_bytes_estimate": 13413729764,
   "fresh_free_bytes_required": 34795164640,
   "uv_version": "0.13.1",
   "uv_sha256": "4075a09490327d2bedfacc807fa48252fb93647c5bd7ef28f00e579160ea3fb5",
   "all_runtimes": true,
   "models_included": false,
-  "registry_sha256": "68ae06b6c230612066591c2380506dae6886b2ccb779d79c938ff14cb9894b0d",
+  "registry_sha256": "156bbd39bce385f3c0304a8c7851dfdf23dc2d3a60ff676b1bb29e9836e1185a",
   "id": "a898d13996810090315fc482c85fbae3537c70ea1fca23dd47d0823c78e06eba"
 }

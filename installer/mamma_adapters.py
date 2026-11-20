@@ -73,7 +73,36 @@ def adapt_sdf(root):
     root=Path(root)/'src'
     for name,annotation in [('aabb.hpp','__align__(32)'),('triangle.hpp','__align__(48)')]:
         replace(root/name,annotation,'')
+    # AMD ROCm: HIP's float2/3/4 types define their own component-wise
+    # operators, which make the CUDA-sample vector smoothstep() overloads
+    # ambiguous. SDF never calls smoothstep; drop only those three overloads.
+    path=root/'helper_math.h';source=path.read_text(encoding='utf-8')
+    source,count=re.subn(r'inline __device__ __host__ float([234]) smoothstep\(float\1 a, float\1 b, float\1 x\)\n\{\n.*?\n\}\n','',source,flags=re.S)
+    if count!=3:raise ValueError('Unsupported upstream source: helper_math.h')
+    path.write_text(source,encoding='utf-8')
     path=root/'bvh_cuda_op.cu';source=path.read_text(encoding='utf-8')
+    # The radix-tree split search keeps t=ceil(l/divider)=1 and ends only when
+    # `divider *= 2` overflows (signed overflow, undefined). NVIDIA's compiler
+    # wraps; AMD's LLVM assumes no overflow and the kernel never finishes.
+    # Stop before overflow: the extra t=1 steps of a converged monotone search
+    # change nothing, so the tree is the same for any count below 2^29.
+    old='for (int t = (l + (divider - 1)) / divider; t >= 1; divider *= 2) {'
+    if source.count(old)!=1:raise ValueError('Unsupported upstream source: bvh_cuda_op.cu')
+    source=source.replace(old,'for (int t = (l + (divider - 1)) / divider; t >= 1 && divider < (1 << 30); divider *= 2) {')
+    # Bottom-up bounding boxes: a thread reads the sibling box another thread
+    # wrote, ordered only by an atomic counter. AMD GPUs keep per-CU caches
+    # that are not coherent, so publish (release) before and acquire after
+    # each counter update; NVIDIA needs the same for a guaranteed order.
+    for old in ('    int curr_counter = atomicAdd(atomic_counters + current_idx, 1);\n',
+                '      curr_counter = atomicAdd(atomic_counters + current_idx, 1);\n'):
+        if source.count(old)!=1:raise ValueError('Unsupported upstream source: bvh_cuda_op.cu')
+        indent=old[:len(old)-len(old.lstrip())]
+        source=source.replace(old,indent+'__threadfence();\n'+old+indent+'__threadfence();\n')
+    # Profiler range markers only; HIP on Windows reports them unsupported,
+    # which the following error check turns into a failure.
+    for call in ('cudaProfilerStart();','cudaProfilerStop();'):
+        if source.count(call)!=1:raise ValueError('Unsupported upstream source: bvh_cuda_op.cu')
+        source=source.replace(call,'')
     source=source.replace('triangles.type(), "bvh_tree_building"','triangles.scalar_type(), "bvh_tree_building"')
     source=re.sub(r'\blong\b','int64_t',source)
     start=source.index('  AT_DISPATCH_FLOATING_TYPES(');head,tail=source[:start],source[start:]

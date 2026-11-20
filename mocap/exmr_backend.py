@@ -222,7 +222,7 @@ def run_stage(project,stage,result,emit,force=False,feature_phase=None):
     except (OSError,ValueError,KeyError,RuntimeError,EOFError):cached=False
     if cached:
         complete_stage(project,stage,project/outputs[0],old.get('elapsed',0),True,emit);return
-    if not torch.cuda.is_available():raise RuntimeError('ExMR requires a supported NVIDIA CUDA GPU. Check System in Help for details.')
+    if not torch.cuda.is_available():raise RuntimeError('ExMR requires a supported AMD Radeon GPU (PyTorch ROCm). Check System in Help for details.')
     started=time.monotonic()
     free,total=torch.cuda.mem_get_info();set_memory_budget(free,total)
     torch.set_num_threads(4);cv2.setNumThreads(2);torch.manual_seed(0);np.random.seed(0)

@@ -6,7 +6,10 @@ from .storage import sha256
 
 
 def identity(root=ROOT):
-    names=('installer/prompthmr-camera-lock.json','installer/prompthmr_camera_adapters.py','installer/verify_prompthmr_camera.py')
+    # The last four are the shared AMD ROCm build inputs (installer/rocm_build.IDENTITY_FILES).
+    names=('installer/prompthmr-camera-lock.json','installer/prompthmr_camera_adapters.py','installer/verify_prompthmr_camera.py',
+           'installer/rocm_build.py','installer/rocm-devel-lock.json','installer/rocm/hip_cuda_compat.h',
+           'installer/rocm/include/device_launch_parameters.h')
     return hashlib.sha256(json.dumps({n:sha256(Path(root)/n) for n in names},sort_keys=True).encode()).hexdigest()
 
 

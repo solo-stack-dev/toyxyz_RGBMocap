@@ -8,6 +8,10 @@ import tempfile
 tempfile.tempdir=str(temp)
 os.environ.update(TEMP=str(temp),TMP=str(temp),HF_HUB_OFFLINE='1',MPLBACKEND='Agg',WANDB_MODE='disabled',NO_ALBUMENTATIONS_UPDATE='1')
 os.environ.setdefault('RGB_MOCAP_WORKER_THREADS','4')
+# AMD ROCm: MIOpen's default find mode picks very slow solvers for some
+# (e.g. dilated) convolutions on Windows; FAST measured 27x faster on the
+# tracking DeepLab with outputs matching to 3e-6 relative.
+os.environ.setdefault('MIOPEN_FIND_MODE','FAST')
 from mocap.compute_policy import configure_worker_cpu
 configure_worker_cpu(sys.argv[1])
 for stream in (sys.stdout,sys.stderr):

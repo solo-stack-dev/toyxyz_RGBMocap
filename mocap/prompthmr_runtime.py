@@ -4,7 +4,8 @@ import json,sys,subprocess
 from .paths import ROOT
 from .storage import atomic_json,sha256
 
-PACKAGES={'torch':'2.7.1+cu128','torchvision':'0.22.1+cu128','numpy':'1.26.4','timm':'0.9.0','smplx':'0.1.28'}
+# AMD fork: PyTorch's ROCm build for Windows (torch.cuda.* is the Radeon GPU).
+PACKAGES={'torch':'2.14.0+rocm10.1.0','torchvision':'0.29.0a0+rocm10.1.0','numpy':'1.26.4','timm':'0.9.0','smplx':'0.1.28'}
 
 
 def snapshot(engine):

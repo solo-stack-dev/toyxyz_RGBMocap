@@ -400,7 +400,7 @@ def run_stage(project,stage,result,emit,force=False):
     interval=camera_interval(n,root_state.get('flow_options',{}).get('camera_interval',0))
     free=total=None
     if stage!='flow_export' and not static:
-        if not torch.cuda.is_available():raise RuntimeError('FlowHMR requires a supported NVIDIA CUDA GPU.')
+        if not torch.cuda.is_available():raise RuntimeError('FlowHMR requires a supported AMD Radeon GPU (PyTorch ROCm).')
         free,total=torch.cuda.mem_get_info()
     validate_length(n)
     if free is not None:set_memory_budget(free,total)

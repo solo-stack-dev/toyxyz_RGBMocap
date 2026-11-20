@@ -274,7 +274,7 @@ def main() -> int:
             memory=psutil.virtual_memory()
             free=total=None
             if args.stage=='people':
-                if not torch.cuda.is_available():raise RuntimeError('A supported NVIDIA CUDA GPU is required for person detection.')
+                if not torch.cuda.is_available():raise RuntimeError('A supported AMD Radeon GPU (PyTorch ROCm) is required for person detection.')
                 free,total=torch.cuda.mem_get_info()
             if free is not None:
                 set_memory_budget(free,total)
@@ -345,7 +345,7 @@ def main() -> int:
         free=None
         if args.stage in ('track','pva','features','gvhmr','refine','footmr','handflow'):
             if not torch.cuda.is_available():
-                raise RuntimeError('A supported NVIDIA CUDA GPU is required for this model. Check System in Help for details.')
+                raise RuntimeError('A supported AMD Radeon GPU (PyTorch ROCm) is required for this model. Check System in Help for details.')
             free,total=torch.cuda.mem_get_info()
         memory=psutil.virtual_memory()
         if free is not None:

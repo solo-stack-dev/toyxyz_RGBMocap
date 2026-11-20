@@ -9,12 +9,12 @@ import os
 from pathlib import Path
 
 PROFILES = {
-    'shared': dict(folder='runtime', dev='.venv', base=None, python='3.10.22', packages={'torch':'2.7.1+cu128','numpy':'1.23.5','scipy':'1.14.1','timm':'0.9.12'}),
-    'gui': dict(folder='runtime_gui', dev='.venv', base='shared', python='3.10.22', packages={'torch':'2.7.1+cu128','numpy':'1.23.5','scipy':'1.14.1','timm':'0.9.12'}),
-    'flow': dict(folder='runtime_flow', dev='.venv-flow', base='shared', python='3.10.22', packages={'torch':'2.7.1+cu128','numpy':'1.26.4','scipy':'1.15.3','timm':'1.0.30'}),
-    'hand': dict(folder='runtime_hand', dev='.venv-hand', base='shared', python='3.10.22', packages={'torch':'2.7.1+cu128','numpy':'1.23.5','timm':'0.9.12','ultralytics':'8.3.80'}),
-    'htd': dict(folder='runtime_htd', dev='.venv-htd', base='shared', python='3.10.22', packages={'torch':'2.7.1+cu128','numpy':'1.23.5','timm':'1.0.12'}),
-    'exmr': dict(folder='runtime_exmr', dev='.venv-exmr', base=None, python='3.12.10', packages={'torch':'2.8.0+cu128','numpy':'2.3.5','scipy':'1.15.2','timm':'0.9.12'}),
+    'shared': dict(folder='runtime', dev='.venv', base=None, python='3.10.22', packages={'torch':'2.14.0+rocm10.1.0','numpy':'1.23.5','scipy':'1.14.1','timm':'0.9.12'}),
+    'gui': dict(folder='runtime_gui', dev='.venv', base='shared', python='3.10.22', packages={'torch':'2.14.0+rocm10.1.0','numpy':'1.23.5','scipy':'1.14.1','timm':'0.9.12'}),
+    'flow': dict(folder='runtime_flow', dev='.venv-flow', base='shared', python='3.10.22', packages={'torch':'2.14.0+rocm10.1.0','numpy':'1.26.4','scipy':'1.15.3','timm':'1.0.30'}),
+    'hand': dict(folder='runtime_hand', dev='.venv-hand', base='shared', python='3.10.22', packages={'torch':'2.14.0+rocm10.1.0','numpy':'1.23.5','timm':'0.9.12','ultralytics':'8.3.80'}),
+    'htd': dict(folder='runtime_htd', dev='.venv-htd', base='shared', python='3.10.22', packages={'torch':'2.14.0+rocm10.1.0','numpy':'1.23.5','timm':'1.0.12'}),
+    'exmr': dict(folder='runtime_exmr', dev='.venv-exmr', base=None, python='3.12.10', packages={'torch':'2.14.0+rocm10.1.0','numpy':'2.3.5','scipy':'1.15.2','timm':'0.9.12'}),
 }
 
 def profile_for(stage, args=()):

@@ -1,7 +1,9 @@
 """Install the optional, isolated MAMMA runtime from pinned upstream files.
 
 Restricted MAMMA/SDF sources are acquired on the user's machine, never bundled.
-An existing working generation is retained until installation and CUDA checks pass.
+An existing working generation is retained until installation and GPU checks pass.
+AMD fork: native SAM 2/SDF are compiled with HIP through the shared ROCm build
+toolchain in installer/rocm_build.py.
 """
 from pathlib import Path
 import argparse
@@ -20,9 +22,10 @@ from pathlib import PurePosixPath
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
+from mocap.amd_gpu import ensure_visible_device;ensure_visible_device(ROOT)  # AMD fork: hide GPUs the ROCm kernels do not cover
 from installer import engine
 from installer.mamma_adapters import adapt_engine,adapt_sdf
-from tools.pinned_download import download as download_package
+from installer import rocm_build
 from tools.session_lock import app_lock
 from tools.support_components import download,extract
 from mocap.storage import atomic_json
@@ -52,28 +55,19 @@ def run_step(command,root,cancel,log):
 def identity(root=ROOT):
     # Runtime content, not installer presentation, determines numerical identity.
     names=['installer/mamma-runtime-lock.json','installer/mamma_adapters.py',
-           'installer/mamma_helpers/speed_crop.py','installer/mamma_helpers/speed_landmarks.py']
+           'installer/mamma_helpers/speed_crop.py','installer/mamma_helpers/speed_landmarks.py',
+           *rocm_build.IDENTITY_FILES]
     return hashlib.sha256(json.dumps({n:engine.sha(Path(root)/n) for n in names},sort_keys=True).encode()).hexdigest()
 
 
 def compiler():
-    cuda=Path(os.environ.get('CUDA_PATH_V12_8',r'C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8'))
-    if not (cuda/'bin/nvcc.exe').is_file():
-        raise RuntimeError('MAMMA native setup needs NVIDIA CUDA Toolkit 12.8 (including nvcc). See docs/MAMMA.md. The NVIDIA driver alone does not include this compiler.')
-    vswhere=Path(os.environ.get('ProgramFiles(x86)',r'C:\Program Files (x86)'))/'Microsoft Visual Studio/Installer/vswhere.exe'
-    if not vswhere.is_file():raise RuntimeError('Install Visual Studio 2022 Build Tools with Desktop development with C++ and the Windows SDK. See docs/MAMMA.md.')
-    found=subprocess.run([str(vswhere),'-utf8','-latest','-products','*','-version','[17.0,18.0)',
-        '-requires','Microsoft.VisualStudio.Component.VC.Tools.x86.x64','-property','installationPath'],
-        capture_output=True,text=True,encoding='utf-8',errors='replace',check=True)
-    vc=Path(found.stdout.strip())/'VC/Auxiliary/Build/vcvars64.bat'
-    if not vc.is_file():raise RuntimeError('Visual Studio 2022 C++ compiler was not found. See docs/MAMMA.md.')
-    return cuda,vc
+    """Visual Studio 2022+ (vcvars64.bat); the ROCm compiler is fetched by rocm_build.toolchain()."""
+    return rocm_build.visual_studio()
 
 
 def fetch_package(row,cache):
-    hosts = {'files.pythonhosted.org','download.pytorch.org','download-r2.pytorch.org'}
-    return download_package(cache/row['sha256'],row['name'],row,filename=row['filename'],
-                            allowed_hosts=hosts,max_seconds=24*60*60)
+    # Hash-checked; reuses identical archives from other setups and the bundled rocm wheel.
+    return rocm_build.fetch(row,cache,ROOT)
 
 
 
@@ -130,16 +124,18 @@ def setup(args):
                 print('Verified MAMMA runtime retained. Models and projects were not changed.',flush=True)
                 return report
             except Exception as error:print('Existing MAMMA generation needs repair: '+str(error),flush=True)
-        cuda,vc=compiler()
+        vc=compiler()
         if shutil.disk_usage(ROOT).free<18*1024**3:
             raise OSError('MAMMA setup requires approximately 18 GiB free for its runtime, downloads and native build, excluding models and compiler tools.')
         setup=ROOT/'.setup';cache=setup/'mamma-downloads';cache.mkdir(exist_ok=True)
         generation=tag[:20]+'-'+os.urandom(4).hex()
-        stage=setup/'mamma-staging'/generation;stage.mkdir(parents=True)
+        # Short staging path: ROCm wheels nest up to 152 characters below
+        # site-packages and Windows long paths may be disabled (MAX_PATH 260).
+        stage=setup/'st'/('mamma-'+generation[-8:]);stage.mkdir(parents=True)
         promoted=None;committed=False
         try:
             logs=setup/'logs';logs.mkdir(exist_ok=True)
-            print('MAMMA: separate Python 3.11 / CUDA 12.8 environment. Download estimate %.2f GiB; installed estimate 6-8 GiB, excluding models and compiler tools.' % (sum(p['bytes'] for p in lock['packages'])/1024**3),flush=True)
+            print('MAMMA: separate Python 3.11 / PyTorch ROCm (AMD GPU) environment. Download estimate %.2f GiB; installed estimate 6-8 GiB, excluding models and compiler tools.' % (sum(p['bytes'] for p in lock['packages'])/1024**3),flush=True)
             run_step([uv,'python','install',lock['python'],'--install-dir',setup/'python','--no-bin','--no-registry','--no-config'],ROOT,None,logs/'mamma-python.log')
             shutil.copytree(engine.python_home(ROOT,lock['python']),stage,dirs_exist_ok=True,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
             py=stage/'python.exe';target=stage/'Lib/site-packages'
@@ -162,19 +158,17 @@ def setup(args):
             adapt_engine(sources/'mamma',ROOT/'installer/mamma_helpers')
             adapt_sdf(sources/'sdf')
             os.replace(sources/'mamma',stage/'engine')
-            cap=subprocess.run([str(py),'-I','-X','utf8','-c',"import torch;assert torch.cuda.is_available();print('.'.join(map(str,torch.cuda.get_device_capability())))"],
-                capture_output=True,text=True,encoding='utf-8',errors='replace',check=True,creationflags=0x08000000).stdout.strip()
-            if not __import__('re').fullmatch(r'\d+\.\d+',cap):raise ValueError('Invalid CUDA architecture.')
+            arch,cap=rocm_build.gpu_target(py,engine.clean_env(ROOT))
+            tools=rocm_build.toolchain(ROOT,uv,py,lambda command,log:run_step(command,ROOT,None,log))
             build=stage/'build-native.cmd'
-            lines=['@echo off','setlocal DisableDelayedExpansion','chcp 65001 >nul','call '+quoted(vc),'if errorlevel 1 exit /b 1',
-                'set "CUDA_HOME='+str(cuda).replace('%','%%')+'"','set "TORCH_CUDA_ARCH_LIST='+cap+'"',
-                'set "MAX_JOBS=2"','set "DISTUTILS_USE_SDK=1"','set "MSSdk=1"','set "FORCE_CUDA=1"',
-                'set "SAM2_BUILD_ALLOW_ERRORS=0"','set "SAM2_BUILD_CUDA=1"']
+            # SAM2_BUILD_ALLOW_ERRORS=0: a failed sam2._C build fails setup.
+            lines=['@echo off','setlocal DisableDelayedExpansion','chcp 65001 >nul',*rocm_build.build_lines(vc,tools,arch,target),
+                'set "FORCE_CUDA=1"','set "SAM2_BUILD_ALLOW_ERRORS=0"','set "SAM2_BUILD_CUDA=1"']
             for name in ('sam2','sdf'):
                 lines+=[' '.join(quoted(x) for x in [uv,'pip','install','--python',py,'--target',target,'--no-deps','--no-build-isolation',
                         '--no-index','--offline','--no-cache','--link-mode','copy',sources/name]),'if errorlevel 1 exit /b 1']
             lines+=['exit /b 0'];build.write_text('\n'.join(lines)+'\n',encoding='utf-8')
-            print('MAMMA: compiling native SAM 2 and SDF for this GPU (SM '+cap+'). See .setup/logs/mamma-native.log.',flush=True)
+            print('MAMMA: compiling native SAM 2 and SDF with HIP for this GPU ('+arch+'). See .setup/logs/mamma-native.log.',flush=True)
             run_step([os.environ.get('COMSPEC','cmd.exe'),'/d','/c',str(build)],ROOT,None,logs/'mamma-native.log')
             engine.prune_runtime(stage)
             report=verify(stage,lock)
@@ -185,7 +179,7 @@ def setup(args):
             promoted=dest
             report=verify(dest,lock)
             from mocap.mamma_runtime import configure
-            report.update(runtime_id=tag,cuda_arch=cap,installed_bytes=sum(p.stat().st_size for p in dest.rglob('*') if p.is_file()))
+            report.update(runtime_id=tag,gpu_arch=arch,compute_capability=cap,rocm_toolchain=tools['lock'],installed_bytes=sum(p.stat().st_size for p in dest.rglob('*') if p.is_file()))
             atomic_json(dest/'ready.json',report)
             configure(dest/'python.exe',dest/'engine',managed_id=tag)
             committed=True

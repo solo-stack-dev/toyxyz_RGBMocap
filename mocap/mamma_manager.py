@@ -36,13 +36,13 @@ def setup_instructions(parent):
     text.setHtml(f'''<h3>MAMMA separate runtime</h3>
 <p>Installed size: <b>{measured}</b>, excluding model weights and developer tools.
 Allow about <b>18 GiB free</b> during setup for downloads and compilation. Other model runtimes stay unchanged.</p>
-<ol><li>Install <a href="https://visualstudio.microsoft.com/downloads/">Visual Studio 2022 Build Tools</a> with
+<p>This AMD build needs a Radeon RX 7900-series GPU (gfx1100) with a current AMD Adrenalin driver.</p>
+<ol><li>Install <a href="https://visualstudio.microsoft.com/downloads/">Visual Studio 2022 or newer</a> (Build Tools or Community) with
 <b>Desktop development with C++</b> and the Windows SDK.</li>
-<li>Install <a href="https://developer.nvidia.com/cuda-12-8-0-download-archive">NVIDIA CUDA Toolkit 12.8</a>.
-The GPU driver alone does not include the compiler.</li>
+<li>Nothing else to install: setup downloads AMD's pinned ROCm compiler (about 5 GiB in <code>.setup/rocm-devel</code>, shared with the other optional setups).</li>
 <li>Save your work, close RGB MoCap, then run <b>Setup_MAMMA.cmd</b> in the app folder.</li>
 <li>Review the upstream license prompt. Setup downloads pinned Python/packages and official sources,
-builds SAM 2 and SDF for this GPU, and tests the CUDA kernels before enabling the runtime.</li>
+builds SAM 2 and SDF for this GPU with HIP, and tests the GPU kernels before enabling the runtime.</li>
 <li>Reopen the app. Select MAMMA and prepare the files in Model Manager.</li></ol>
 <p><a href="https://github.com/cuevhv/mamma/blob/main/LICENSE">MAMMA</a> and
 <a href="https://github.com/cuevhv/pytorch_sdf/blob/main/LICENSE">pytorch_sdf</a> have restricted, non-commercial licenses.

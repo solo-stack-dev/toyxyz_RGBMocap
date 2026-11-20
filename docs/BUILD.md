@@ -19,13 +19,14 @@ controls, see [model-specific guides](models/README.md). For the native motion-c
 
 No Ubuntu, WSL or Docker is required. The three single-video workflows use the
 reviewed wheel stack without a system CUDA Toolkit. Optional MAMMA native builds
-require CUDA Toolkit 12.8 and the C++ tools described below. GPU compatibility
+need Visual Studio 2022 or newer with the Windows SDK; the AMD ROCm compiler is
+fetched by setup (`installer/rocm_build.py`). GPU compatibility
 still depends on the NVIDIA driver and installed wheels.
 
 Optional PromptHMR has a separate pinned Python 3.11 environment installed with
-`Setup_PromptHMR.cmd`. It also needs C++ tools and CUDA Toolkit 12.8 to build
-SAM2. Choosing Y for its optional moving-camera support also builds
-DroidCalib/LieTorch over that same environment and verifies actual CUDA operations;
+`Setup_PromptHMR.cmd`. It also needs Visual Studio 2022+ and the shared ROCm
+toolchain to build SAM2 with HIP. Choosing Y for its optional moving-camera support also builds
+DroidCalib/LieTorch over that same environment and verifies actual GPU operations;
 MAMMA/SDF is not required. Read [its setup/developer notes](models/PROMPTHMR.md)
 before changing its lock, adapters, native modules or model paths.
 
@@ -191,21 +192,24 @@ high-FPS clip, and Default discovery after switching back.
 ## Optional MAMMA runtime
 
 Follow the [agent installation and native-build runbook](MAMMA_AGENT_SETUP.md)
-for prerequisite checks, staged/manual builds, CUDA tests and recovery. For
+for prerequisite checks, staged/manual builds, GPU tests and recovery. For
 ordinary use, prefer the automated setup over manually assembling packages.
 
 `Setup_MAMMA.cmd` calls `tools/setup_mamma.py` after license acceptance.
-`installer/mamma-runtime-lock.json` pins Python 3.11.17, PyTorch 2.7.1+cu128,
+`installer/mamma-runtime-lock.json` pins Python 3.11.17, PyTorch 2.14.0+rocm10.1.0 (AMD ROCm for Windows),
 all package artifacts and the official MAMMA/SAM 2/pytorch_sdf commits by SHA-256.
 The six core runtime profiles stay unchanged. The optional setup needs Visual
-Studio 2022 C++ Build Tools with the Windows SDK and CUDA Toolkit 12.8.
+Studio 2022 or newer with the C++ workload and Windows SDK. The HIP compiler
+(`rocm-sdk-devel`, pinned in `installer/rocm-devel-lock.json`) is installed once
+into `.setup/rocm-devel/` by `installer/rocm_build.py` and shared by the MAMMA,
+PromptHMR and PromptHMR camera builds; it is never part of a verified runtime.
 
 `installer/mamma_adapters.py` applies Windows portability and the validated
 FP32 masked-landmark/quiet-fit adapters to directly downloaded upstream source.
 The original helper code is in `installer/mamma_helpers/`. Restricted upstream
 source and compiled SDF modules must not be added to this repository.
 Both native SAM 2 and SDF are built for the installed GPU architecture, then
-checked by `installer/verify_mamma.py` (real CUDA kernels, SDF gradients and
+checked by `installer/verify_mamma.py` (real GPU kernels, SDF gradients and
 installed package file hashes). A GPU architecture change requires setup again.
 
 Verified generations live in ignored `runtime_mamma/<generation>/`; the active

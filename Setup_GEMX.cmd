@@ -8,7 +8,7 @@ if not exist "runtime\python.exe" (
 )
 echo GEM-X optional Windows setup. Close RGB MoCap before continuing.
 echo Allow 12 GiB of temporary free space for runtime setup. Models are separate.
-echo The pinned NVIDIA Warp wheel needs a Turing or newer GPU and R580-series or newer driver.
+echo This AMD build runs GEM-X on PyTorch ROCm; SOMA uses its PyTorch path instead of NVIDIA Warp.
 echo Review GEM-X source and weight terms, SOMA-X terms, and the detector notice:
 echo https://github.com/NVlabs/GEM-X/blob/4aef1452e5df171deff4f293c08e643eb450981e/LICENSE
 echo https://huggingface.co/nvidia/GEM-X

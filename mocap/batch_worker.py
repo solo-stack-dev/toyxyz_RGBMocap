@@ -58,7 +58,7 @@ def main(argv, emit):
                     elif phase in ('pose','features'):
                         import psutil
                         from .memory_mode import select_stage
-                        if not torch.cuda.is_available():raise RuntimeError('GVHMR requires a supported NVIDIA CUDA GPU')
+                        if not torch.cuda.is_available():raise RuntimeError('GVHMR requires a supported AMD Radeon GPU (PyTorch ROCm)')
                         free,total=torch.cuda.mem_get_info();set_memory_budget(free,total)
                         select_stage('features',free+session.resident_bytes,total,0,observe)
                         from . import engines

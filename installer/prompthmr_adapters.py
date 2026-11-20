@@ -25,6 +25,17 @@ def adapt_engine(root):
         raise ValueError('Unsupported attention bias')
     return torch.nn.functional.scaled_dot_product_attention(q.transpose(1,2), k.transpose(1,2), v.transpose(1,2), dropout_p=0.).transpose(1,2)
 ''')
+    # AMD fork: no xFormers build exists for ROCm on Windows. Keep the DINOv2
+    # image encoder on its memory-efficient attention path (same equations and
+    # [B, N, heads, dim] layout) with PyTorch SDPA instead of the explicit
+    # softmax(QK^T) fallback, which would materialise every attention matrix.
+    replace(root/'prompt_hmr/models/dinov2/layers/attention.py','from xformers.ops import memory_efficient_attention, unbind',
+        '''from torch import unbind
+
+        def memory_efficient_attention(q, k, v, attn_bias=None):
+            if attn_bias is not None:
+                raise ValueError('Unsupported attention bias')
+            return scaled_dot_product_attention(q.transpose(1, 2), k.transpose(1, 2), v.transpose(1, 2)).transpose(1, 2)''')
 
 
 def install_python_source(source, target, name):

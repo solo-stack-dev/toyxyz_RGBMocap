@@ -90,16 +90,17 @@ Blender retains its GPL license and bundled notices; see [Third-party notices](.
 
 ## Install
 
-**Tested configuration:** NVIDIA GeForce RTX 5090 (32 GB VRAM), AMD Ryzen 9
-9950X, 96 GB RAM, Windows 11 Pro (64-bit). This is the tested configuration,
-not a minimum specification. Other GPUs, drivers and clean Windows installations
-have not yet been verified; compatibility reports are welcome.
+**This fork runs on AMD Radeon GPUs.** It was tested on an AMD Radeon RX 7900 XTX
+(24 GB VRAM) with Windows 11 Pro (64-bit); see [AMD Radeon build](AMD.md) for the
+supported GPUs, what was verified and what changed. The upstream NVIDIA version
+was tested on an NVIDIA GeForce RTX 5090 (32 GB VRAM), AMD Ryzen 9 9950X and
+96 GB RAM; its timings and memory figures in this guide come from that PC.
 
 1. Install [Git for Windows](https://git-scm.com/download/win). Open **Command
    Prompt** in a writable folder, then run:
 
    ```cmd
-   git clone https://github.com/toyxyz/toyxyz_RGBMocap.git
+   git clone https://github.com/solo-stack-dev/toyxyz_RGBMocap.git
    cd toyxyz_RGBMocap
    ```
 
@@ -122,7 +123,8 @@ have not yet been verified; compatibility reports are welcome.
    be downloaded manually.
 
 **For MAMMA multi-video capture**, complete those steps, install Visual Studio
-2022 C++ Build Tools with a Windows SDK and NVIDIA CUDA Toolkit 12.8, then close
+2022 or newer with Desktop development with C++ and a Windows SDK (setup downloads
+AMD's ROCm compiler itself), then close
 the app and run:
 
 ```cmd
@@ -137,7 +139,7 @@ need it. Follow the [MAMMA installation and model checklist](MAMMA.md) for exact
 prerequisites, the locked-head body models and multi-video requirements.
 
 **For PromptHMR single-video interaction capture**, complete the base installation
-and the same C++/Windows SDK/CUDA Toolkit 12.8 prerequisites, close the app, then run:
+and the same Visual Studio C++/Windows SDK prerequisites, close the app, then run:
 
 ```cmd
 Setup_PromptHMR.cmd
@@ -153,8 +155,8 @@ run installation inside the app.
 ### Optional SAM 3.1 person tracker
 
 After the base install, close RGB MoCap and run `Setup_SAM31.cmd`. This setup
-reuses ExMR's Python and CUDA runtime and requires native NVIDIA CUDA bfloat16
-support. Reopen the app, select ExMR, FlowHMR or GVHMR and choose **SAM 3.1**
+reuses ExMR's Python and ROCm runtime and requires native GPU bfloat16
+support (the RX 7900 series has it). Reopen the app, select ExMR, FlowHMR or GVHMR and choose **SAM 3.1**
 next to **Find person**. In **Model Manager**, use **Auto Download** on
 **SAM 3.1 Person Tracking (Optional)** or import the supported checkpoint.
 The base install and updater leave this optional setup for you to run.
@@ -390,7 +392,7 @@ Final installed size is different from free space needed during setup. The base
 installer estimates **32.4 GiB free before models**, including temporary work;
 MAMMA and PromptHMR each ask for about **18 GiB free** and GEM-X asks for
 **12 GiB free**, excluding models and compiler
-tools. Download archives, C++ Build Tools, CUDA Toolkit and generated projects
+tools. Download archives, C++ Build Tools, the ROCm compiler (about 4.5 GiB in `.setup/rocm-devel/`) and generated projects
 need additional space. Earlier optional setup reports of 6.19 GiB (MAMMA) and
 6.32 GiB (PromptHMR) included generated files excluded from this cache-free
 inventory. See [MAMMA](MAMMA.md) and [PromptHMR](models/PROMPTHMR.md) for setup

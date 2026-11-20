@@ -41,6 +41,22 @@
       "sha256": "2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9"
     },
     {
+      "name": "amd-torch-device-gfx1100",
+      "version": "2.14.0+rocm10.1.0",
+      "filename": "amd_torch_device_gfx1100-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx1100/amd_torch_device_gfx1100-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+      "sha256": "659a961e646345fe330aca0b36a1e7e84ef6f15cef2848ccdb9b3fb64bf0e401",
+      "bytes": 50351828
+    },
+    {
+      "name": "amd-torch-device-gfx110x",
+      "version": "2.14.0+rocm10.1.0",
+      "filename": "amd_torch_device_gfx110x-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/amd-torch-device-gfx110x/amd_torch_device_gfx110x-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+      "sha256": "7f48df45ea1916e311c97528acc4ce3b966482dd2095216909694400ff315942",
+      "bytes": 307045455
+    },
+    {
       "name": "annotated-doc",
       "version": "0.0.5",
       "filename": "annotated_doc-0.0.5-py3-none-any.whl",
@@ -291,6 +307,48 @@
       "sha256": "33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb"
     },
     {
+      "name": "rocm",
+      "version": "10.1.0",
+      "filename": "rocm-10.1.0-py3-none-any.whl",
+      "url": null,
+      "bundled": "wheels/rocm-10.1.0-py3-none-any.whl",
+      "origin": "AMD's rocm meta package, published only as an sdist; repacked by tools/make_rocm_meta_source.py without running setup.py",
+      "sha256": "7ea52cf6bea78e1bcecaa6920ebc98f702d07e685000815166706966e5dd9e51",
+      "bytes": 18600
+    },
+    {
+      "name": "rocm-bootstrap",
+      "version": "0.3.0",
+      "filename": "rocm_bootstrap-0.3.0-py3-none-any.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-bootstrap/rocm_bootstrap-0.3.0-py3-none-any.whl",
+      "sha256": "62d0160ecdd86f7132dbab9aec257cb2c96327df2592b0633aa6bb56399cc095",
+      "bytes": 30532
+    },
+    {
+      "name": "rocm-sdk-core",
+      "version": "10.1.0",
+      "filename": "rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-core/rocm_sdk_core-10.1.0-py3-none-win_amd64.whl",
+      "sha256": "b12f1c4cde14ed1cd8864006d17586c6b1e6a4e4695b9597cfe04ed7715e952f",
+      "bytes": 776978384
+    },
+    {
+      "name": "rocm-sdk-device-gfx1100",
+      "version": "10.1.0",
+      "filename": "rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-device-gfx1100/rocm_sdk_device_gfx1100-10.1.0-py3-none-win_amd64.whl",
+      "sha256": "89b6fc9b76c0ea8cbf437e53c5bf0cd992a2f642ec6ddd34829a94f07f89b0b0",
+      "bytes": 201201815
+    },
+    {
+      "name": "rocm-sdk-libraries",
+      "version": "10.1.0",
+      "filename": "rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/rocm-sdk-libraries/rocm_sdk_libraries-10.1.0-py3-none-win_amd64.whl",
+      "sha256": "0c34bafbb4aa626cc710d8b130bb314f591194c3d79eeb5892b755ea0be06159",
+      "bytes": 118645973
+    },
+    {
       "name": "rtree",
       "version": "1.4.1",
       "filename": "rtree-1.4.1-py3-none-win_amd64.whl",
@@ -337,6 +395,14 @@
       "url": "https://files.pythonhosted.org/packages/65/71/0670843133a43d43070abeb1949abfdef12a86d490bea9cd9e18e37c5ff7/tokenizers-0.22.2-cp39-abi3-win_amd64.whl",
       "bytes": 2747786,
       "sha256": "c9ea31edff2968b44a88f97d784c2f16dc0729b8b143ed004699ebca91f05c48"
+    },
+    {
+      "name": "torch",
+      "version": "2.14.0+rocm10.1.0",
+      "filename": "torch-2.14.0+rocm10.1.0-cp312-cp312-win_amd64.whl",
+      "url": "https://stable.repo.amd.com/rocm/whl-next/torch/torch-2.14.0%2Brocm10.1.0-cp312-cp312-win_amd64.whl",
+      "sha256": "81e26c307846267d9490ff8c7421382b954909772abb7770a16baec740f44e4b",
+      "bytes": 115562766
     },
     {
       "name": "tqdm",
@@ -393,136 +459,7 @@
       "url": "https://files.pythonhosted.org/packages/82/d5/d345c030772d3493a51a8beb3e7f71b6f5e41742072db0cdbcd1461ea94e/warp_lang-1.19.0-py3-none-win_amd64.whl",
       "bytes": 134934525,
       "sha256": "bb4865dde4c2ae916d3d2a4e20ed1cd406e1d0a76ae722c3c574a9d43385c4d9"
-    },
-    {
-      "name": "torch",
-      "version": "2.10.0+cu128",
-      "filename": "torch-2.10.0+cu128-cp312-cp312-win_amd64.whl",
-      "url": "https://download-r2.pytorch.org/whl/cu128/torch-2.10.0%2Bcu128-cp312-cp312-win_amd64.whl",
-      "bytes": 2867409626,
-      "sha256": "fbde8f6a9ec8c76979a0d14df21c10b9e5cab6f0d106a73ca73e2179bc597cae"
     }
   ],
-  "shared_cuda_dlls": [
-    {
-      "name": "cublas64_12.dll",
-      "bytes": 113716224,
-      "sha256": "9513540e4ec4c51ee9e7304138c2cc255c29a8c181f9e80c38efa25738becd99"
-    },
-    {
-      "name": "cublasLt64_12.dll",
-      "bytes": 674667520,
-      "sha256": "b199d1ff892a81b7fd3d57ba1781549609b41500b36008fef326038393ad46c7"
-    },
-    {
-      "name": "cudart64_12.dll",
-      "bytes": 573952,
-      "sha256": "c2c9a9c22a9bcba90e261825968836787b331038047a26770cffb7a583c28344"
-    },
-    {
-      "name": "cudnn64_9.dll",
-      "bytes": 266288,
-      "sha256": "9edbcdff73b0af070eb160b2ce66e59feca04aa017351d8eedcc5e8e149967d2"
-    },
-    {
-      "name": "cudnn_adv64_9.dll",
-      "bytes": 282445872,
-      "sha256": "f202e8ff36209ac4292fe2ef79d4539487495b3b948f0c978cc63298f43a1850"
-    },
-    {
-      "name": "cudnn_cnn64_9.dll",
-      "bytes": 4618272,
-      "sha256": "3f03dec3b81f137f049e1d1c06ff469248eef54ff9424b3b9045fc0f69559d1a"
-    },
-    {
-      "name": "cudnn_engines_precompiled64_9.dll",
-      "bytes": 513926688,
-      "sha256": "ebc2c1f74366b029a4350f7f9a3b109ccd5aa9b4ae02527950793dd29f7b74fb"
-    },
-    {
-      "name": "cudnn_engines_runtime_compiled64_9.dll",
-      "bytes": 20201008,
-      "sha256": "93ab6351ca0f2b6ca842f83d284e56c427525778c14657229801a13cf8121bd8"
-    },
-    {
-      "name": "cudnn_graph64_9.dll",
-      "bytes": 2420256,
-      "sha256": "a933efeb280a3252297f92d79f7e83003bcbc6f665872d11645d1dbbab9cb598"
-    },
-    {
-      "name": "cudnn_heuristic64_9.dll",
-      "bytes": 56823328,
-      "sha256": "458175f12771a35de0ea39c04250d727c2424d42a7ffe0bc987ae81204748fba"
-    },
-    {
-      "name": "cudnn_ops64_9.dll",
-      "bytes": 126508576,
-      "sha256": "851d8f4191a24b322b0be738d191a3159455f0da4db47a19f5cc7ad6e55edf61"
-    },
-    {
-      "name": "cufft64_11.dll",
-      "bytes": 276121600,
-      "sha256": "f4fea9227b14843894ad5436725f9638b172171142c95291fc6ae7a493248221"
-    },
-    {
-      "name": "cufftw64_11.dll",
-      "bytes": 163328,
-      "sha256": "84c86dcc4d4b770e75766964149ef688c901dc89e380278fe399dd3c03608541"
-    },
-    {
-      "name": "cupti64_2025.1.1.dll",
-      "bytes": 4483664,
-      "sha256": "d026870a2c503d1b6e38a793170823ceca83d776f9b887f63fb0bb5c93d5c525"
-    },
-    {
-      "name": "curand64_10.dll",
-      "bytes": 71955968,
-      "sha256": "3465fd1b46e551339b8f44c455756a0f2cba8bd846562eb659040d48edb7aaac"
-    },
-    {
-      "name": "cusolver64_11.dll",
-      "bytes": 225683456,
-      "sha256": "3d4f7a66b5f352db56d4bb5962bb453a42d5feb2d831779f4a0bebc9971c36fb"
-    },
-    {
-      "name": "cusolverMg64_11.dll",
-      "bytes": 157071360,
-      "sha256": "c3377f10606ff0606be2f08401d54aff6c37f137b78d6b6e21be356a5b4d6cc2"
-    },
-    {
-      "name": "cusparse64_12.dll",
-      "bytes": 379535872,
-      "sha256": "f4688daa6163c47a0b5293926ec7ae367de6b4af54ea201638b308831b322a0e"
-    },
-    {
-      "name": "nvJitLink_120_0.dll",
-      "bytes": 77860352,
-      "sha256": "959d3cb44527ec884db8dc20772520b584dbe7d622d11b0530e6326417078b3e"
-    },
-    {
-      "name": "nvrtc-builtins64_128.dll",
-      "bytes": 6356480,
-      "sha256": "a7afa2a40cbd3f922a33d8bf71c13cb26ca707c7016a9bc5fcde36759ba668f5"
-    },
-    {
-      "name": "nvrtc64_120_0.alt.dll",
-      "bytes": 86794240,
-      "sha256": "5464ea01b079d78042374dc7819684910c8e9d5c63000e2d2d5aa02298ecf2ae"
-    },
-    {
-      "name": "nvrtc64_120_0.dll",
-      "bytes": 86728192,
-      "sha256": "02d2d7ef4690bf1a55dda1d3ac94c86ce8d16920071c87bcd3e70e94ef346e93"
-    },
-    {
-      "name": "uv.dll",
-      "bytes": 195072,
-      "sha256": "fa569e682fc5fb7a8eb94c6829af9f30a569748dbbc6bce39735d48bc960bcf8"
-    },
-    {
-      "name": "zlibwapi.dll",
-      "bytes": 89088,
-      "sha256": "1f047faec08d9a35c304fb4a7cf13853589359a8f7cbfdd48c5d5807712dcf05"
-    }
-  ]
+  "shared_cuda_dlls": []
 }

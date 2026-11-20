@@ -11,6 +11,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from mocap.amd_gpu import ensure_visible_device;ensure_visible_device(ROOT)  # AMD fork: hide GPUs the ROCm kernels do not cover
 from installer import engine
 from mocap.gemx_runtime import LOCK, configuration, runtime_id
 from mocap.storage import atomic_json, sha256

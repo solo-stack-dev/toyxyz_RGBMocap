@@ -2,6 +2,7 @@
 from pathlib import Path
 import sys,json,hashlib,zipfile,shutil,os,argparse,uuid,subprocess,stat
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
+from mocap.amd_gpu import ensure_visible_device;ensure_visible_device(ROOT)  # AMD fork: hide GPUs the ROCm kernels do not cover
 from mocap.storage import atomic_json,sha256
 from mocap.pear_runtime import identity,base_identity,configuration
 from installer.pear_adapters import adapt
@@ -51,7 +52,7 @@ def prepare(cache=None,align=True):
             adapter_sha256=sha256(ROOT/'installer/pear_adapters.py'),
             changes='Windows live-inference imports; shared runtime and pure-Python geometry constructor helpers. Original licenses retained.'))
         print('Verifying PEAR shared-runtime imports and CUDA kernels...',flush=True)
-        code='import sys; sys.path[:0]='+repr([str(ROOT),str(folder/'packages'),str(folder/'engine')])+'; from mocap.runtime_registry import activate; activate('+repr(str(ROOT))+', "shared"); import torch, numpy, scipy, timm, cv2, roma; from pytorch3d.transforms import axis_angle_to_matrix; from torchvision.ops import nms; assert torch.cuda.is_available(), \"Compatible NVIDIA GPU required\"; x=torch.zeros((1,3),device=\"cuda\"); assert axis_angle_to_matrix(x).isfinite().all(); assert nms(torch.tensor([[0.,0.,1.,1.]],device=\"cuda\"),torch.ones(1,device=\"cuda\"),.5).numel()==1; print(\"PEAR CUDA verification passed\")'
+        code='import sys; sys.path[:0]='+repr([str(ROOT),str(folder/'packages'),str(folder/'engine')])+'; from mocap.runtime_registry import activate; activate('+repr(str(ROOT))+', "shared"); import torch, numpy, scipy, timm, cv2, roma; from pytorch3d.transforms import axis_angle_to_matrix; from torchvision.ops import nms; assert torch.cuda.is_available(), \"Supported AMD Radeon GPU (PyTorch ROCm) required\"; x=torch.zeros((1,3),device=\"cuda\"); assert axis_angle_to_matrix(x).isfinite().all(); assert nms(torch.tensor([[0.,0.,1.,1.]],device=\"cuda\"),torch.ones(1,device=\"cuda\"),.5).numel()==1; print(\"PEAR GPU verification passed\")'
         subprocess.run([str(ROOT/'runtime/python.exe'),'-I','-X','utf8','-B','-c',code],check=True,timeout=180)
         files={p.relative_to(folder).as_posix():[p.stat().st_size,p.stat().st_mtime_ns] for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix not in ('.pyc','.pyo')}
         atomic_json(ROOT/'.setup/pear-runtime.json',dict(version=2,identity=identity(),base_identity=base,folder=folder.relative_to(ROOT).as_posix(),files=files))

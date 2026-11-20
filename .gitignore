@@ -32,6 +32,7 @@ __pycache__/
 *.egg-info/
 # User data, inference assets, motion, credentials and local settings
 /models/
+/models-inbox/
 /models_smplx*/
 /projects/
 /cache/

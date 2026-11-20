@@ -112,7 +112,7 @@ def run(project,emit):
     boxes=np.load(project/'flow_hand_boxes.npy',allow_pickle=False)
     if boxes.shape!=(n,2,4):raise ValueError('SAM hand boxes do not match the motion')
     torch.set_num_threads(configure_worker_cpu('exmr_features'))
-    if not torch.cuda.is_available():raise RuntimeError('HaMeR requires a compatible NVIDIA GPU')
+    if not torch.cuda.is_available():raise RuntimeError('HaMeR requires a supported AMD Radeon GPU (PyTorch ROCm)')
     free,total=torch.cuda.mem_get_info();set_memory_budget(free,total)
     from .exmr_backend import activate,prepare_mano
     root,weights=activate();prepare_mano(root,weights)

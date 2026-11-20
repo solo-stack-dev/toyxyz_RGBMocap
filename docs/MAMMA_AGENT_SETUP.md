@@ -15,9 +15,12 @@ build below when the supported installer can do the work.
 | `Setup_MAMMA.cmd` | Human-readable prerequisite/license prompt, then optional setup |
 | `tools/setup_mamma.py` | Pinned downloads, compiler discovery, isolated staging, native build, verification and atomic activation |
 | `installer/mamma-runtime-lock.json` | Exact Python, package artifacts, source commits, sizes and SHA-256 values |
-| `installer/mamma_adapters.py` | Windows/validated engine changes and SDF MSVC fixes |
+| `installer/mamma_adapters.py` | Windows/validated engine changes and SDF MSVC/HIP fixes |
 | `installer/mamma_helpers/` | Original exact-ROI/FP32 landmark helpers copied into the engine |
-| `installer/verify_mamma.py` | Full locked-package check, actual CUDA kernel tests and installed-file verification |
+| `installer/rocm_build.py` | Shared AMD ROCm build toolchain: Visual Studio discovery, `rocm-sdk-devel` install/expansion, GPU target, HIP build environment |
+| `installer/rocm-devel-lock.json` | Pinned ROCm compiler wheels (devel, core, libraries, gfx1100 device, `rocm` meta) |
+| `installer/rocm/` | Force-included `hip_cuda_compat.h` (32-bit warp masks) and stand-ins for CUDA-only headers |
+| `installer/verify_mamma.py` | Full locked-package check, actual GPU kernel tests and installed-file verification |
 | `mocap/mamma_runtime.py` | Runtime registration, activation checks and engine fingerprint |
 | `tools/configure_mamma.py` | Registration of an independently prepared environment |
 | `mocap/mamma_models.py` | Supported model paths, hashes and provider instructions |
@@ -26,8 +29,8 @@ Read the current files before using copied commands: the lock is authoritative,
 not the version examples in this document. This guide does not install packages
 into the GUI, shared, FlowHMR, HandFlow, HTD, ExMR or Blender runtimes.
 
-Current optional pins include Python **3.11.17**, PyTorch **2.7.1+cu128**,
-torchvision **0.22.1+cu128**, NumPy **1.26.4**, SciPy **1.17.1**, smplx
+Current optional pins include Python **3.11.17**, PyTorch **2.14.0+rocm10.1.0**,
+torchvision **0.29.0a0+rocm10.1.0** (AMD ROCm 10.1 for Windows, gfx1100 kernels), NumPy **1.26.4**, SciPy **1.17.1**, smplx
 **0.1.28** and timm **1.0.30**. All remaining dependencies are also locked.
 Do not substitute the latest pip versions or merge the model runtimes.
 
@@ -58,45 +61,52 @@ source videos are not build inputs to delete. Never include them in a commit.
 
 - Complete the ordinary `install.cmd` installation first. The optional setup
   uses `runtime/python.exe` and the verified `.setup/bootstrap-git/uv.exe`.
-- Use native 64-bit Windows with an NVIDIA CUDA-capable GPU and a driver
-  compatible with the pinned CUDA 12.8 PyTorch stack. No CPU/AMD fallback is
-  implemented for this MAMMA pipeline.
-- Install **Visual Studio 2022 Build Tools**, **Desktop development with C++**,
-  the x64 compiler and a Windows SDK. The current discovery uses `vswhere` for
-  Visual Studio version 17.x; a different Visual Studio major version is not a
-  drop-in replacement.
-- Install **CUDA Toolkit 12.8**, including `nvcc.exe`. The CUDA version shown by
-  `nvidia-smi` describes driver capability; it does not prove the toolkit is
-  installed. Setup checks `CUDA_PATH_V12_8`, or the standard CUDA `v12.8` folder.
+- Use native 64-bit Windows with an AMD Radeon RX 7900-series GPU (gfx1100) and
+  a current AMD Adrenalin driver. This fork runs PyTorch's ROCm build for Windows;
+  the pinned device wheels contain gfx1100 kernels only. No CPU or NVIDIA
+  fallback is implemented for this MAMMA pipeline.
+- On PCs that also have integrated Radeon graphics, `mocap/amd_gpu.py` sets
+  `HIP_VISIBLE_DEVICES` to the supported GPU before setup and inference. A
+  process that touches the GPU without it can fail with "invalid kernel file".
+- Install **Visual Studio 2022 or newer** (Build Tools or Community) with
+  **Desktop development with C++**, the x64 compiler and a Windows SDK. Discovery
+  uses `vswhere -version [17.0,)`, so Visual Studio 2026 (18.x) works.
+- No CUDA Toolkit. Setup installs AMD's pinned `rocm-sdk-devel` 10.1.0 wheel
+  with its core/libraries/gfx1100 siblings into `.setup/rocm-devel/<lock id>/site`
+  and expands it there with the `rocm` package's own expander (what `rocm-sdk init`
+  does). It is a shared build tool (about 4.5 GiB, hard links), never part of a
+  verified runtime: expansion rewrites the devel wheel's RECORD.
 - Review the provider licenses. The setup prompt requires acceptance; the
   noninteractive `--accept-licenses` switch is an explicit acknowledgment, not a
   switch to bypass those terms. Use it only when the user has already authorized
   installation under the reviewed terms. Never handle provider passwords.
 
-Typical GeForce targets are RTX 30 = 8.6, RTX 40 = 8.9 and RTX 50 = 12.0.
-These examples are not a GPU support promise. Query the actual target interpreter:
+The RX 7900 XTX/XT/GRE report `gfx1100`; PyTorch reports its capability as
+`(11, 0)`. Query the actual target interpreter:
 
-Before a MAMMA environment exists, use `nvidia-smi` for the initial GPU/driver
-inventory. Run the PyTorch probe below only after automatic setup or preparation
+Before a MAMMA environment exists, use the base runtime for the initial GPU
+inventory: `runtime/python.exe -I mocap/amd_gpu.py`. Run the PyTorch probe below only after automatic setup or preparation
 of the complete private environment; do not switch another model's runtime to
 make the probe work.
 
 ```powershell
 # PowerShell, from the app checkout. Replace the interpreter path below.
 $mammaPython = 'D:\MAMMA-build\runtime\python.exe'
-& $mammaPython -I -c "import torch; print(torch.__version__, torch.version.cuda); print(torch.cuda.is_available()); print(torch.cuda.get_device_name()); print(torch.cuda.get_device_capability())"
+& $mammaPython -I -c "import torch; print(torch.__version__, torch.version.hip); print(torch.cuda.is_available()); print(torch.cuda.get_device_name()); print(torch.cuda.get_device_properties(0).gcnArchName)"
 if ($LASTEXITCODE -ne 0) { throw 'GPU probe failed; stop before building.' }
 ```
 
-The installer sets `TORCH_CUDA_ARCH_LIST` to the installed GPU's capability.
+The installer sets `PYTORCH_ROCM_ARCH` to the installed GPU's `gcnArchName`
+(for example `gfx1100`) and refuses targets outside `installer/rocm-devel-lock.json`.
 Different GPU models can share a target architecture, but that alone does not
 prove binary compatibility: the complete Python/PyTorch/OS/dependency stack must
 also match. Multi-architecture builds are not the current installer behavior.
-Do not promise a 5090-only test validates a 4090, 3090 or every 50-series GPU.
 
-Measured optional runtime: **6.19 GiB**. Allow about **18 GiB free during setup**,
-excluding separately installed compiler tools, models and projects. Downloaded
-package/source archives are about **3.57 GiB**, excluding Python and weights.
+Measured optional AMD runtime: **5.54 GiB** (setup report, RX 7900 XTX PC).
+Allow about **18 GiB free during setup**, plus about 6 GiB the first time the
+shared ROCm toolchain is installed, excluding Visual Studio, models and
+projects. Downloaded package/source archives are about **1.98 GiB**, excluding
+Python, weights and the 1.25 GiB of toolchain wheels.
 The ten models total about **7.80 GiB**, or **3.53 GiB additional** if shared VGGT is
 already available. GeoCalib is also shared with PEAR (about 0.108 GiB); count it
 once. Automatic camera gravity uses the base Flow/Python 3.10 alignment overlay
@@ -124,9 +134,10 @@ Expected setup sequence:
 2. If the existing managed generation has the same identity, verify it again
    and retain it when valid. Do not rebuild simply because setup emits no
    download progress.
-3. Locate Visual Studio 2022 and CUDA 12.8; check free space.
-4. Stage a separate full Python installation under
-   `.setup/mamma-staging/<generation>/`.
+3. Locate Visual Studio 2022 or newer and the Windows SDK; check free space.
+4. Stage a separate full Python installation under the short path
+   `.setup/st/mamma-<random>/` (Windows long paths may be disabled; ROCm wheels
+   nest up to 152 characters below `site-packages`).
 5. Download locked packages and upstream source archives into
    `.setup/mamma-downloads/`, checking sizes and SHA-256. Install the exact
    artifacts without resolving alternative dependencies. Build the few locked
@@ -134,8 +145,10 @@ Expected setup sequence:
 6. Extract the pinned MAMMA, SAM 2 and SDF sources. Apply the Windows adapters to
    fresh source exactly once, copy the landmark helpers, and place MAMMA in
    the staged `engine/` directory.
-7. Generate `build-native.cmd`, initialize `vcvars64.bat`, select the actual
-   GPU capability, and build SAM 2 and SDF against the staged Python/PyTorch.
+7. Read the GPU target from the staged PyTorch, prepare the shared ROCm
+   toolchain once (`.setup/logs/rocm-devel-*.log`), generate `build-native.cmd`
+   (`vcvars64.bat` plus the HIP environment from `rocm_build.build_lines`) and
+   build SAM 2 and SDF against the staged Python/PyTorch.
 8. Prune the installer-defined unneeded build artifacts; run the full verifier.
 9. Move the verified generation to `runtime_mamma/<generation>/` and verify it
    again from its final location before registering it.
@@ -176,6 +189,14 @@ Build in a **new private directory**, never on top of the active generation.
 
 The SDF adapter addresses MSVC alignment, Windows integer width (`long` versus
 `int64_t`), the PyTorch scalar-type API and preprocessor/dispatch compatibility.
+For AMD HIP it also: removes three unused vector `smoothstep()` overloads that
+are ambiguous with HIP's own float2/3/4 operators; bounds the radix-tree split
+search, which upstream ends only by signed `int` overflow (NVIDIA wraps; AMD's
+LLVM treats it as undefined and the kernel never finishes); adds device-scope
+fences around the bottom-up bounding-box counters (without them AMD's
+non-coherent per-CU caches give stale boxes and wrong distances on meshes of a
+few thousand triangles); and removes `cudaProfilerStart/Stop`, which HIP on
+Windows reports as unsupported.
 The engine adapter handles Windows FFmpeg/EGL/multiprocessing behavior,
 CPU checkpoint loading, exact-ROI helpers and validated fitting diagnostics.
 Read the actual patch before changing it. Do not silently remove algorithms,
@@ -194,45 +215,49 @@ if ($LASTEXITCODE -ne 0) { throw 'Adapter failed; do not continue with partially
 
 ### Compile the two native packages
 
-Use a **Visual Studio 2022 x64 Native Tools Command Prompt**, then start
-PowerShell inside it so the compiler environment is inherited. Alternatively,
-use a generated CMD that calls the discovered `vcvars64.bat`, as the installer
-does. `cl.exe` in an unrelated terminal is not enough evidence of a complete SDK.
-
-The following PowerShell example assumes the fully prepared private Python and
-fresh adapted sources above. Adjust the example paths. Fail after either build;
-do not proceed because only the second command succeeded.
+PyTorch's ROCm build hipifies the CUDA sources itself and compiles device code
+with AMD's `hipcc`. Host `.cpp` files must use ROCm's `clang-cl` (`CXX`),
+because MSVC `cl.exe` cannot parse the hipified ATen/HIP headers; that path is
+only taken when `ninja` is on `PATH`. Do not hand-write this environment: let
+`installer/rocm_build.py` produce it, exactly as the installer does. The
+following example assumes the fully prepared private Python and fresh adapted
+sources above; it writes and runs a build CMD. Fail after either build; do not
+proceed because only the second command succeeded.
 
 ```powershell
 $mammaApp = (Resolve-Path '.').Path
 $mammaPython = 'D:\MAMMA-build\runtime\python.exe'
-$mammaSamSource = 'D:\MAMMA-build\sources\sam2'
-$mammaSdfSource = 'D:\MAMMA-build\sources\sdf'
-$mammaSite = (& $mammaPython -I -c "import sysconfig; print(sysconfig.get_path('purelib'))").Trim()
-if ($LASTEXITCODE -ne 0) { throw 'Cannot locate the target site-packages.' }
-$mammaArch = (& $mammaPython -I -c "import torch; assert torch.cuda.is_available(); print('.'.join(map(str,torch.cuda.get_device_capability())))").Trim()
-if ($LASTEXITCODE -ne 0 -or $mammaArch -notmatch '^\d+\.\d+$') { throw 'Cannot determine the GPU architecture.' }
-
-$env:CUDA_HOME = 'C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8'
-$env:TORCH_CUDA_ARCH_LIST = $mammaArch
-$env:MAX_JOBS = '2'
-$env:DISTUTILS_USE_SDK = '1'
-$env:MSSdk = '1'
-$env:FORCE_CUDA = '1'
-$env:SAM2_BUILD_ALLOW_ERRORS = '0'
-$env:SAM2_BUILD_CUDA = '1'
-
-foreach ($mammaSource in @($mammaSamSource, $mammaSdfSource)) {
-    & "$mammaApp\.setup\bootstrap-git\uv.exe" pip install --python $mammaPython --target $mammaSite --no-deps --no-build-isolation --no-index --offline --no-cache --link-mode copy $mammaSource
-    if ($LASTEXITCODE -ne 0) { throw "Native build failed: $mammaSource" }
-}
+$mammaBuild = 'D:\MAMMA-build'
+& "$mammaApp\runtime\python.exe" -I -X utf8 -B -c @'
+import sys, os, subprocess
+sys.path.insert(0, os.getcwd())
+from pathlib import Path
+from installer import engine, rocm_build
+from tools.setup_mamma import run_step
+py, build = Path(sys.argv[1]), Path(sys.argv[2])
+site = py.parent / 'Lib/site-packages'
+uv = Path('.setup/bootstrap-git/uv.exe').resolve()
+arch, _ = rocm_build.gpu_target(py, engine.clean_env(Path.cwd()))
+tools = rocm_build.toolchain(Path.cwd(), uv, py, lambda c, l: run_step(c, Path.cwd(), None, l))
+lines = ['@echo off', 'setlocal DisableDelayedExpansion', *rocm_build.build_lines(rocm_build.visual_studio(), tools, arch, site),
+         'set "FORCE_CUDA=1"', 'set "SAM2_BUILD_ALLOW_ERRORS=0"', 'set "SAM2_BUILD_CUDA=1"']
+for name in ('sam2', 'sdf'):
+    lines += [' '.join(rocm_build.quoted(x) for x in [uv, 'pip', 'install', '--python', py, '--target', site, '--no-deps',
+              '--no-build-isolation', '--no-index', '--offline', '--no-cache', '--link-mode', 'copy', build / 'sources' / name]),
+              'if errorlevel 1 exit /b 1']
+(build / 'build-native.cmd').write_text('\n'.join(lines + ['exit /b 0']) + '\n', encoding='utf-8')
+'@ $mammaPython $mammaBuild
+if ($LASTEXITCODE -ne 0) { throw 'Could not prepare the ROCm build.' }
+cmd /d /c "$mammaBuild\build-native.cmd" *> "$mammaBuild\native.log"
+if ($LASTEXITCODE -ne 0) { throw 'Native build failed; read native.log.' }
 ```
 
-All build dependencies must already exist for the offline commands. This limits
-compiler concurrency to two jobs, as in the installer, instead of using every
-CPU core and exhausting RAM. Capture the output in a private log. Never enable
-SAM 2's allow-errors fallback and report a successful CUDA build afterward.
-Do not force unsupported compilers or copy unrelated DLLs into Windows folders.
+All build dependencies must already exist for the offline commands. The build
+uses four compiler jobs (`MAX_JOBS=4`), as in the installer, instead of every
+CPU core. Capture the output in a private log. Never enable SAM 2's
+allow-errors fallback and report a successful GPU build afterward. Do not set
+`ROCM_PATH` to the devel folder (clang then cannot find its amdgcn bitcode),
+force unsupported compilers or copy unrelated DLLs into Windows folders.
 
 If a candidate already contains older SAM/SDF packages, create a fresh candidate
 or reinstall those distributions cleanly within that disposable candidate first.
@@ -250,9 +275,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Verification failed; do not register this envi
 The output directory must exist. This command needs no model weights. It checks:
 
 - Exact Python and every locked distribution version.
-- Real SDF CUDA BVH distances, closest triangle indices and point gradients.
+- Real SDF GPU BVH distances, closest triangle indices and point gradients on
+  a box, plus distances on a 5,120-triangle sphere and a 2,048-triangle torus
+  against `trimesh`'s exact CPU search (this catches BVH build races).
 - Inside/outside winding calculations on a known mesh.
-- SAM 2 CUDA connected-component areas on a known mask.
+- SAM 2 GPU connected-component areas on a known mask.
 - Distribution RECORD SHA-256 hashes, excluding the explicitly skipped
   developer/debug artifacts in the verifier.
 
@@ -321,7 +348,8 @@ camera cap. Keep the existing RAM/Windows allocation-headroom guard, CUDA
 allocator budget and allocation-error reporting. The 65-input synthetic
 preparation/save/restore tests do not validate 65-view masks, VGGT or fitting.
 
-Only report checks actually performed. Current evidence is one Windows 11 /
+Only report checks actually performed. The AMD build was verified on one
+Windows 11 / RX 7900 XTX PC; earlier upstream evidence was one Windows 11 /
 RTX 5090 PC; it is not a clean-Windows, other-GPU or full 60-second validation.
 See [VALIDATION.md](VALIDATION.md) for recorded measurements.
 
@@ -330,13 +358,13 @@ See [VALIDATION.md](VALIDATION.md) for recorded measurements.
 | Symptom | Check and action |
 | --- | --- |
 | App/installer lock error | Close the relevant app/setup process normally. Do not delete a live lock or terminate unrelated processes. |
-| `nvcc`/Visual Studio not found | Check the full CUDA 12.8 toolkit and VS 2022 x64 C++ workload/SDK; the driver and another VS major version are insufficient. |
+| Visual Studio / Windows SDK not found | Install Visual Studio 2022 or newer with the x64 C++ workload and a Windows SDK. The ROCm compiler is fetched by setup; see `.setup/logs/rocm-devel-*.log` if that step fails. |
 | Package/source hash mismatch | Stop. Inspect the URL, partial download and exact lock entry. Do not disable hash checks or accept a different checkpoint/source. |
 | Adapter cannot find expected text/API | Source is wrong, already patched or changed. Start from a fresh exact pinned source copy; do not partially improvise the patch. |
-| Compiler fails or runs out of RAM | Inspect `mamma-native.log`; keep the two-job bound and close competing work. Check the exact compiler/toolkit, not model files. |
-| DLL load failure / native import failure | Confirm target Python/torch/CUDA and x64 architecture, package metadata and dependent DLLs. Rebuild the candidate; do not copy a random `.pyd`. |
-| No kernel image / invalid device function | Verify actual GPU capability and build architecture; rebuild and run CUDA tests on the target GPU. |
-| SDF/component verification fails | Reject the candidate. Check MSVC index-width patches, source versions and actual native module loaded. Do not relax numeric limits. |
+| Compiler fails or runs out of RAM | Inspect `mamma-native.log`; keep the four-job bound and close competing work. `cannot find ROCm device library` means `ROCM_PATH` points at the devel folder; errors in hipified host `.cpp` files mean `CXX`/ninja were not used. |
+| DLL load failure / native import failure | Confirm target Python/torch ROCm and x64 architecture, package metadata and dependent DLLs. Rebuild the candidate; do not copy a random `.pyd`. |
+| "invalid kernel file" / invalid device function | The process sees a GPU without kernels (often the integrated Radeon as device 0): check `HIP_VISIBLE_DEVICES` (`mocap/amd_gpu.py`). Otherwise verify `gcnArchName` and the build's `PYTORCH_ROCM_ARCH`; rebuild and run the GPU tests on the target GPU. |
+| SDF/component verification fails or hangs | Reject the candidate. A hang or large curved-mesh error means the HIP SDF patches (loop bound, fences) are missing. Check MSVC index-width patches, source versions and actual native module loaded. Do not relax numeric limits. |
 | Engine fingerprint mismatch | Engine code changed since registration. Revalidate a new candidate, then register it; do not edit fingerprints manually. |
 | Model Manager Ready but missing model | Runtime and weights are separate. Follow the supported hash-checked model import instructions. |
 

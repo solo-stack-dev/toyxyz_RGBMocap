@@ -37,7 +37,7 @@ def main():
         from .projection import Placement
         from .temporal_filter import ParameterFilter
         from .input_transform import rotate_frame,input_rotations
-        if not torch.cuda.is_available():raise RuntimeError('PEAR requires a compatible NVIDIA GPU.')
+        if not torch.cuda.is_available():raise RuntimeError('PEAR requires a supported AMD Radeon GPU (PyTorch ROCm).')
         from ..compute_policy import gpu_memory_fraction
         free,total=torch.cuda.mem_get_info()
         torch.cuda.set_per_process_memory_fraction(max(1024**2/total,gpu_memory_fraction(free,total)))

@@ -11,6 +11,8 @@ def collect() -> dict:
         import torch
         result["torch"] = torch.__version__
         result["cuda_runtime"] = torch.version.cuda
+        # This fork runs on AMD Radeon GPUs through PyTorch's ROCm build.
+        result["hip_runtime"] = getattr(torch.version, "hip", None)
         result["cuda"] = torch.cuda.is_available()
         if result["cuda"]:
             result["gpu"] = torch.cuda.get_device_name(0)

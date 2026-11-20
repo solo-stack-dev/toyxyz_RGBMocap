@@ -1,0 +1,9 @@
+rocm-10.1.0.dist-info/METADATA,sha256=oKVOUx0v9gBZFRSVq38y0swNIMCDktJ_CGb9FYHRNTk,176
+rocm-10.1.0.dist-info/WHEEL,sha256=NhDGRTtknwvssqfgfxefoyU9D7olVcMZ3Tp7nVEdYtU,101
+rocm-10.1.0.dist-info/entry_points.txt,sha256=AQ4MS-nukgA3czb0cqxOwzG8HSc4A0GLvtH82nt4wCw,52
+rocm-10.1.0.dist-info/top_level.txt,sha256=11rdN7b_krUiTXtSI46qgXIiKc-YzE_3UY1_nlynZJI,9
+rocm_sdk/__init__.py,sha256=7YfjbMFTt4ERM_uTT_HwGBFMOU8ypWqgQGY-9mwUfD0,7172
+rocm_sdk/__main__.py,sha256=l2Mrj297PpUicSKWJyuAUGW3powx87UyOxxTTpZxMu8,5548
+rocm_sdk/_devel.py,sha256=HClovwvxyM5GFYV70sz354WlPSDGg5WCZagSqAfjeDE,22725
+rocm_sdk/_dist_info.py,sha256=GiddCy8rTjtpqgiujO6fFNIx7t0I6cyPNAPmT4IfeHY,18538
+rocm-10.1.0.dist-info/RECORD,,

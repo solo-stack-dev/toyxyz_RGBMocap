@@ -5,6 +5,10 @@ root = Path(__file__).resolve().parent
 sys.path.insert(0, str(root))
 import os
 os.environ.setdefault('RGB_MOCAP_WORKER_THREADS','4')
+# AMD ROCm: MIOpen's default find mode picks very slow solvers for some
+# (e.g. dilated) convolutions on Windows; FAST measured 27x faster with
+# outputs matching to 3e-6 relative. Set before torch loads MIOpen.
+os.environ.setdefault('MIOPEN_FIND_MODE','FAST')
 from mocap.compute_policy import configure_worker_cpu
 configure_worker_cpu(sys.argv[1])
 for stream in (sys.stdout, sys.stderr):

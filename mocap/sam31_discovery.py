@@ -93,7 +93,7 @@ def discover(project, prompt, anchor_time, points, emit, *, force_offload=False)
 
     torch.set_num_threads(configure_worker_cpu('sam31_people'))
     if not torch.cuda.is_available() or not torch.cuda.is_bf16_supported(including_emulation=False):
-        raise RuntimeError('SAM 3.1 requires an NVIDIA CUDA GPU with native bfloat16 support.')
+        raise RuntimeError('SAM 3.1 requires a supported AMD Radeon GPU (PyTorch ROCm) with native bfloat16 support.')
     set_memory_budget(*torch.cuda.mem_get_info())
     cv2.setNumThreads(2)
     activate(folder)

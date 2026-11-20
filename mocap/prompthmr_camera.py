@@ -18,13 +18,20 @@ def estimate(pipe,emit):
     module=importlib.util.module_from_spec(spec);sys.modules[name]=module;spec.loader.exec_module(module)
     # No network fallback: use only the Model Manager's verified Metric3D file.
     from pipeline.yvanyin_metric3d_main import hubconf
-    # The pinned xFormers flash kernels do not support every Windows GPU.
-    # Keep the same attention equations/layout using Torch's native backend.
+    # Metric3D's memory-efficient attention path normally calls xFormers, which
+    # has no AMD ROCm build. Keep that path (same equations and layout) with
+    # Torch's native SDPA instead of its explicit softmax(QK^T) fallback.
     from mono.model.backbones import ViT_DINO,ViT_DINO_reg
     def attention(q,k,v,attn_bias=None):
         if attn_bias is not None and not isinstance(attn_bias,torch.Tensor):raise ValueError('Unsupported Metric3D attention bias.')
         return torch.nn.functional.scaled_dot_product_attention(q.transpose(1,2),k.transpose(1,2),v.transpose(1,2),attn_mask=attn_bias,dropout_p=0.).transpose(1,2)
-    previous_attention=[(m,m.memory_efficient_attention) for m in (ViT_DINO,ViT_DINO_reg)]
+    names=('memory_efficient_attention','unbind','XFORMERS_AVAILABLE');missing=object()
+    previous_attention=[(m,{n:getattr(m,n,missing) for n in names}) for m in (ViT_DINO,ViT_DINO_reg)]
+    def restore(m,values):
+        for n,value in values.items():
+            if value is missing:
+                if hasattr(m,n):delattr(m,n)
+            else:setattr(m,n,value)
     original=hubconf.torch.hub.load_state_dict_from_url
     def weights(url,*args,**kwargs):
         if url.endswith('/metric_depth_vit_large_800k.pth'):
@@ -38,14 +45,15 @@ def estimate(pipe,emit):
     slam_args.buffer=max(32,len(pipe.images)+16)
     emit('progress',current=0,total=0,message='Masked DroidCalib camera tracking and Metric3D scale')
     print(f'PromptHMR camera: DroidCalib + Metric3D ViT-Large; frames={len(pipe.images)}, depth batch=1, keyframe buffer={slam_args.buffer}.',flush=True)
-    for m,_ in previous_attention:m.memory_efficient_attention=attention
+    for m,_ in previous_attention:
+        m.memory_efficient_attention=attention;m.unbind=torch.unbind;m.XFORMERS_AVAILABLE=True
     hubconf.torch.hub.load_state_dict_from_url=weights
     try:
         r,t,k=module.run_metric_slam(pipe.images,masks=masks,calib=est_calib(pipe.images),
             monodepth_method='metric3d_vit_large',use_depth_inp=False,stride=1,opt_intr=True,save_depth=False)
     finally:
         hubconf.torch.hub.load_state_dict_from_url=original
-        for m,previous in previous_attention:m.memory_efficient_attention=previous
+        for m,previous in previous_attention:restore(m,previous)
         gc.collect();torch.cuda.empty_cache()
     r=np.asarray(r);t=np.asarray(t);k=np.asarray(k)
     from .camera_tracks import valid_rotations

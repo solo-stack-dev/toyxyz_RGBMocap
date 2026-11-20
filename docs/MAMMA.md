@@ -22,8 +22,8 @@ See [all model guides](models/README.md) for the other capture workflows.
 
 It has a separate optional runtime; ExMR, FlowHMR and GVHMR keep their existing
 environments. Run the normal `install.cmd` first. PromptHMR is another independent
-optional workflow: neither model requires the other's setup. The same C++/CUDA
-build tools can be used, but their installed Python packages and body-model
+optional workflow: neither model requires the other's setup. The same Visual
+Studio and AMD ROCm build tools are shared, but their installed Python packages and body-model
 requirements remain separate. See [PromptHMR](models/PROMPTHMR.md).
 
 ## Before installing
@@ -34,32 +34,36 @@ SMPL-X body data have separate restricted-use terms. They are not redistributed
 in this repository; the root MIT license covers the original connector only.
 This integration does not grant commercial-use or redistribution permission.
 
-Use 64-bit Windows and a compatible NVIDIA GPU/driver. This path builds native
-CUDA components locally. Install the following tools separately before running
-the MAMMA setup:
+This AMD fork needs 64-bit Windows, an AMD Radeon RX 7900-series GPU (gfx1100,
+for example the RX 7900 XTX) and a current AMD Adrenalin driver. It runs on
+PyTorch's ROCm build for Windows and compiles the native SAM 2/SDF components
+locally with HIP. Install one tool separately before running the MAMMA setup:
 
-- **Visual Studio 2022 Build Tools**, with **Desktop development with C++** and
-  a Windows SDK. Select the 2022 release.
-- **[NVIDIA CUDA Toolkit 12.8](https://developer.nvidia.com/cuda-12-8-0-download-archive)**.
-  The NVIDIA driver alone does not include the CUDA compiler.
+- **[Visual Studio 2022 or newer](https://visualstudio.microsoft.com/downloads/)**
+  (Build Tools or Community), with **Desktop development with C++**, the MSVC
+  x64 compiler and a Windows SDK. It supplies the linker and Windows headers.
 
-Compiler tools add disk usage beyond the runtime and may require administrator
+No NVIDIA CUDA Toolkit is used. Setup downloads AMD's pinned ROCm compiler
+(`rocm-sdk-devel` 10.1.0: hipcc and clang) once into `.setup/rocm-devel/`
+(about 4.5 GiB, shared with PromptHMR and its moving-camera build).
+Visual Studio adds disk usage beyond the runtime and may require administrator
 installation. The app and its runtime are installed in the existing RGB MoCap
-folder. Only one Windows/NVIDIA PC has been tested; a clean Windows installation
-and other GPUs have not been verified.
+folder. The AMD build has been tested on one Windows 11 PC with an RX 7900 XTX;
+other AMD GPUs are not supported by the pinned ROCm kernels.
 
 | Item | Storage |
 | --- | ---: |
-| Active runtime excluding caches / earlier setup-report size | 6.11 GiB / 6.19 GiB |
+| AMD runtime, setup report (RX 7900 XTX PC) | 5.54 GiB |
+| Shared ROCm build toolchain in `.setup/rocm-devel/`, installed once | About 4.5 GiB (+1.25 GiB retained wheels) |
 | Model files, when the shared VGGT-Omega model is already installed | About 3.53 GiB additional |
 | Model files including VGGT-Omega | About 7.80 GiB |
-| Free space needed during runtime setup, before models and compiler tools | About 18 GiB |
+| Free space needed during runtime setup, before models and Visual Studio | About 18 GiB, plus about 6 GiB the first time the ROCm toolchain is installed |
 
-The setup downloads approximately 3.57 GiB of package/source archives, excluding
-Python and models. Retained downloads, videos and generated projects use extra
+The setup downloads approximately 1.98 GiB of package/source archives (1.92 GiB
+of wheels, ROCm PyTorch included), excluding Python, models and the toolchain. Retained downloads, videos and generated projects use extra
 space. These figures are separate from the base installation's storage estimate.
-The cache-free additional runtime/model total is about **9.65 GiB** when
-VGGT is already installed. GeoCalib adds about 0.108 GiB of weights if PEAR has
+The additional runtime/model total is about **9.1 GiB** when VGGT is already
+installed, excluding the shared toolchain. GeoCalib adds about 0.108 GiB of weights if PEAR has
 not already installed that shared checkpoint. The existing base camera-alignment
 support is reused; MAMMA's Python 3.11 environment is not upgraded.
 See the [all-model inventory](USER_GUIDE.md#installed-size)
@@ -77,8 +81,8 @@ for shared-file accounting and setup versus installed-space differences.
 
 3. Read and accept the upstream license prompt if its terms permit your use.
    Setup downloads hash-pinned packages and official source, compiles SAM 2/SDF
-   for this PC's GPU, tests actual CUDA kernels and checks installed package
-   hashes before enabling the runtime. Provider passwords are not requested.
+   with HIP for this PC's GPU, tests the actual GPU kernels against CPU
+   references and checks installed package hashes before enabling the runtime. Provider passwords are not requested.
 4. Run `RGBMoCap.cmd`, select **MAMMA** in **AI Motion Model**, and open
    **Model Manager**. **Runtime Setup...**
    shows readiness, prerequisites and a command you can copy. Prepare models
@@ -87,7 +91,7 @@ for shared-file accounting and setup versus installed-space differences.
 Keep the setup window open until it reports completion. **Runtime Setup...**
 shows instructions and can copy the command; it does not run installation inside
 the app. You do not need to install Python packages by hand. The installer uses
-its separate pinned Python 3.11/PyTorch CUDA environment without replacing the
+its separate pinned Python 3.11/PyTorch ROCm environment without replacing the
 other model runtimes.
 
 MAMMA and pytorch_sdf prohibit ordinary redistribution under their provider
@@ -380,6 +384,24 @@ input and stages from the [single-video model records](USER_GUIDE.md#recorded-pr
 so it is not a direct speed ranking or a minimum hardware requirement. Camera
 count, resolution, clip length, people and hardware can change both time and memory.
 
+### AMD ROCm port checks (RX 7900 XTX)
+
+On a Windows 11 PC with an RX 7900 XTX (gfx1100), Setup_MAMMA.cmd compiled SAM 2
+and pytorch_sdf with HIP and its verifier passed: SDF squared distances within
+2.7e-7 of an exact CPU search on a box, a 5,120-triangle sphere and a
+2,048-triangle torus, exact gradients, correct winding numbers and SAM 2
+component areas (also matched against SciPy on random masks up to 1024×1024).
+The full pipeline could not be run there because the registered MAMMA
+checkpoint, `verts_512.pkl` and the locked-head SMPL-X bodies were not installed.
+The masks stage was run through the real worker with the public SAM 2.1 large,
+YOLO12x and CLIP weights on two 60-frame 556×408 views: 57.9 s, peak PyTorch
+VRAM 2.11 GiB allocated / 2.48 GiB reserved, worker RAM 4.02 GiB. Landmarks,
+cameras, fitting and export are not yet measured on AMD.
+
+The worker sets `MIOPEN_FIND_MODE=FAST` (unless already set): with MIOpen's
+default find mode some convolutions (dilated ones in particular) took 27× longer
+on this GPU, while FAST matched the default output to 3e-6 relative.
+
 ## Saved data and limitations
 
 **Save Project As** copies all camera videos and project-private body data.
@@ -408,7 +430,8 @@ require reconstruction and leave the previous displayed motion in place.
 Occlusion, segmentation/identity mistakes, weak camera baselines and uncertain
 scale can still produce poor poses. Contact correction reduces sliding but does
 not repair lost identities, bad camera geometry or missing observations. This
-integration was tested on one Windows/NVIDIA PC; see the
+integration was tested on one Windows/NVIDIA PC before the AMD port (AMD checks
+above); see the
 [recorded processing and memory](#recorded-processing-time-and-memory).
 Clean Windows, other GPUs and the full 60-second limit have
 not been validated.

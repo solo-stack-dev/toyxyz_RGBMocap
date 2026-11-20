@@ -35,31 +35,34 @@ benchmark. The viewport angles differ, and the images do not establish an exact
 ## Install the separate runtime
 
 Keep PromptHMR separate from the base installation. Its package versions and
-local SAM2 CUDA build need their own environment, compiler tools and license
+local SAM2 GPU (HIP) build need their own environment, compiler tools and license
 review. A PromptHMR setup failure must not prevent the base models from working.
 `install.cmd` prepares ExMR/FlowHMR/GVHMR; it does not install PromptHMR or MAMMA.
 
 1. Complete `install.cmd` for the base app.
-2. Install [Visual Studio 2022 Build Tools](https://visualstudio.microsoft.com/downloads/)
-   with **Desktop development with C++** and the Windows SDK, plus
-   [CUDA Toolkit 12.8](https://developer.nvidia.com/cuda-12-8-0-download-archive).
-   The NVIDIA driver alone does not include the compiler.
+2. This AMD fork needs a Radeon RX 7900-series GPU (gfx1100) with a current
+   AMD Adrenalin driver. Install [Visual Studio 2022 or newer](https://visualstudio.microsoft.com/downloads/)
+   (Build Tools or Community) with **Desktop development with C++** and a
+   Windows SDK. No CUDA Toolkit: setup downloads AMD's pinned ROCm compiler
+   (`rocm-sdk-devel` 10.1.0) once into `.setup/rocm-devel/` (about 4.5 GiB,
+   shared with MAMMA and the moving-camera build).
 3. Close RGB MoCap and run `Setup_PromptHMR.cmd`. Review the provider license
    prompt. In Command Prompt, run `Setup_PromptHMR.cmd` from the app folder
    (PowerShell: `.\Setup_PromptHMR.cmd`). Setup downloads pinned sources/packages,
-   builds SAM2 for the installed
-   GPU and verifies real CUDA operations before registering the environment.
-4. For moving footage, choose **Y** at the additional moving-camera setup prompt. This builds DroidCalib/LieTorch for the installed GPU and verifies CUDA operations. The existing PromptHMR Python/Torch environment is reused; fixed-camera support remains available if the optional camera build fails. Review the linked DroidCalib AGPL and dependency terms before choosing Y.
+   builds SAM2 with HIP for the installed
+   GPU and verifies real GPU operations before registering the environment.
+4. For moving footage, choose **Y** at the additional moving-camera setup prompt. This builds DroidCalib/LieTorch with HIP for the installed GPU and verifies their GPU operations against references. The existing PromptHMR Python/Torch environment is reused; fixed-camera support remains available if the optional camera build fails. Review the linked DroidCalib AGPL and dependency terms before choosing Y.
 5. Reopen the app, select **PromptHMR**, and prepare the required files in **Model Manager**. The two rows named **Moving Camera** are optional for Fixed Camera.
    Google Drive may require a manual browser download; use **Manual Download... >
    Import** if automatic downloading fails. **Runtime Setup...** shows instructions
    and copies the command; it does not install anything inside the running app.
    A runtime already marked Ready does not need reinstalling before each use.
 
-The setup report measured **6.32 GiB** on the test PC, excluding weights and
-compiler tools. The later active-runtime inventory excluding caches measured
-**6.22 GiB**. Package downloads total about **3.55 GiB**. Allow approximately
-**18 GiB free during setup**, excluding models and compiler tools. Retained
+The AMD setup report measured **5.36 GiB** on the RX 7900 XTX test PC, excluding
+weights and the shared ROCm toolchain (about 4.5 GiB in `.setup/rocm-devel/`,
+installed once). Package downloads total about **1.87 GiB**. Allow approximately
+**18 GiB free during setup**, plus about 6 GiB the first time the toolchain is
+installed, excluding models and Visual Studio. Retained
 download archives and project intermediates need additional space.
 
 PromptHMR-specific models/support files total approximately **6.09 GiB**,
@@ -68,8 +71,8 @@ with ExMR/GVHMR. SMPL Neutral is also required by PromptHMR; it is optional
 for the three base workflows. Both live in `models/body_models/`. Import those licensed files
 if absent; they are not bundled. MAMMA's locked-head body cannot substitute.
 Adding PromptHMR to a complete base installation measured **6.13 GiB** of model
-files including SMPL Neutral, plus **6.22 GiB** of cache-free runtime, for about
-**12.34 GiB additional**. See the [all-model inventory](../USER_GUIDE.md#installed-size).
+files including SMPL Neutral, plus **5.36 GiB** of runtime, for about
+**11.5 GiB additional** (excluding the shared toolchain). See the [all-model inventory](../USER_GUIDE.md#installed-size).
 PromptHMR's ViTPose COCO-25, SAM2 tiny and detector checkpoints differ from
 similarly named files in other workflows. Imports verify the supported hashes.
 
@@ -115,11 +118,14 @@ On one volume, the connector hardlinks verified weights into the private engine
 without storing another copy. If hardlinks are unavailable, it reports the copy
 and uses extra disk space. Installed Python packages remain separate.
 
-This profile uses Python **3.11.17**, Torch **2.7.1+cu128**, torchvision
-**0.22.1+cu128**, NumPy **1.26.4** and timm **0.9.0**. Torch overlaps with other
+This profile uses Python **3.11.17**, Torch **2.14.0+rocm10.1.0**, torchvision
+**0.29.0a0+rocm10.1.0** (AMD ROCm 10.1 for Windows), NumPy **1.26.4** and timm
+**0.9.0**. xFormers is not installed (it has no ROCm build for Windows): the
+image encoder's and decoder's memory-efficient attention run on PyTorch SDPA
+with the same equations and tensor layout. Torch overlaps with other
 profiles, but Python ABI/package requirements differ. Installed packages remain
 isolated for update safety; identical verified MAMMA download archives can be
-reused. The current locks share 147 identical package archives, about 3.39 GiB
+reused. The current locks share 155 identical package archives, about 1.80 GiB
 of downloads. This does not mean installed packages can safely be merged.
 MAMMA and SDF are not required. Do not combine these environments.
 
@@ -134,7 +140,7 @@ dependencies. It verifies and retains a matching environment, or prepares a new
 generation before switching to it. Keep models, projects and `.setup` state.
 
 If setup fails, read the last CMD error and the corresponding
-`.setup/logs/prompthmr-*.log`. Check free space and the documented C++/CUDA tools;
+`.setup/logs/prompthmr-*.log`. Check free space and the documented Visual Studio tools;
 then retry the same setup. If weights are Missing, use Model Manager instead
 of rebuilding the runtime. If native GPU verification fails after moving to
 another GPU architecture, run setup on that PC; do not copy compiled modules
@@ -144,11 +150,16 @@ from an arbitrary machine or edit registration files to mark them Ready.
 
 Close the app and rerun `Setup_PromptHMR.cmd`, choosing **Y** for moving-camera
 support. The base runtime is verified and retained. A separate, versioned native
-support folder is built over its pinned Python 3.11 / Torch 2.7.1 CUDA 12.8;
+support folder is built over its pinned Python 3.11 / Torch 2.14 ROCm;
 other model runtimes are not changed. No Linux, WSL or Docker is required.
-The verified installed camera extension measured **18.6 MiB** on the test PC,
+The verified installed AMD camera extension measured **2.5 MiB** on the test PC,
 excluding build archives and weights.
-Use Visual Studio 2022 C++ Build Tools / Windows SDK and CUDA Toolkit 12.8.
+It uses the same Visual Studio 2022+ / Windows SDK and the shared ROCm compiler.
+`torch_scatter` has no ROCm build for Windows; DroidCalib calls only its
+`scatter_sum` and `scatter_mean`, which torch_scatter itself implements in
+Python on `Tensor.scatter_add_`. The adapter writes that subset as a small
+pure-PyTorch `torch_scatter` module into the support folder instead of
+downloading a compiled wheel.
 Allow an additional **6 GiB free for building**, excluding models and compiler
 tools. Downloaded build archives are retained separately from installed modules.
 
@@ -175,7 +186,8 @@ camera. These are estimated poses/scale, not measured camera calibration. Foot
 height, drift, missed masks and occlusion can still affect the motion.
 
 Windows adaptations retain the SLAM equations and full frame sequence, use
-64-bit tensor indices, avoid CPU/CUDA kernel-name collisions, and use native
+64-bit tensor indices, avoid CPU/GPU kernel-name collisions, add the C++
+`template` keyword clang requires in one LieTorch kernel, and use native
 Torch SDPA for Metric3D attention. Depth batches are one image in both resource
 modes; the keyframe buffer covers the selected clip plus trajectory-fill slots.
 RAM/VRAM limits follow [Resource Safety](../PERFORMANCE.md#resource-safety); actual OOM handling remains active; long trims can need much more
@@ -222,12 +234,42 @@ default on. Actual allocation-error handling remains active in either setting. L
 close other GPU applications when needed.
 
 Windows adapters retain strict checkpoint loading, avoid discarded initialization
-downloads, and replace a failing xFormers decoder kernel with PyTorch SDPA.
-Verification on one RTX 5090 PC is not full Linux-output equivalence or
-other-GPU validation. Setup tests SAM2 connected components, torchvision CUDA
-NMS and native attention on the user's GPU.
+downloads, and replace xFormers attention with PyTorch SDPA. Verification on one
+RX 7900 XTX PC (and, before the AMD port, one RTX 5090 PC) is not full
+Linux-output equivalence or other-GPU validation. Setup tests SAM2 connected
+components against SciPy, torchvision GPU NMS and native attention against a
+reference on the user's GPU. Moving-camera setup compares LieTorch's GPU
+kernels with its CPU implementation and DroidCalib's correlation lookup with a
+PyTorch reference.
 
 ## Recorded validation
+
+### AMD ROCm port (RX 7900 XTX, Windows 11)
+
+Setup_PromptHMR.cmd with camera support built SAM2, LieTorch and DroidCalib
+with HIP and all verifiers passed: SAM2 components equal to SciPy's labelling,
+torchvision GPU NMS, SDPA within 1e-4 of explicit attention, LieTorch GPU
+results and gradients within 2.1e-14 of its CPU implementation (SE3, Sim3,
+SO3, float64) and the DroidCalib correlation lookup within 1.6e-6 of a PyTorch
+reference. The worker path could not run end to end because the registered
+SMPL-X Neutral and SMPL Neutral bodies were not installed (every PromptHMR
+stage links them, and the pipeline constructor loads SMPL-X). The public-model
+stages were run directly in the installed runtime on a 120-frame (4 s) 1280×720
+single-person clip with a synthetic pan: tracking 34.7 s, SPEC calibration
+1.4 s, DroidCalib + Metric3D moving camera 15.4 s, ViTPose 7.7 s; peak PyTorch
+VRAM 3.89 GiB allocated / 6.96 GiB reserved. The recovered camera path
+(+1.43, +0.55, 0) matched the pan's 320:120-pixel right/down direction.
+On a nearly static camera DroidCalib's upstream backend stops with
+`not enough values to unpack` (too few keyframes); use Fixed Camera there.
+Image/video motion, world placement and post-optimization are not yet
+measured on AMD.
+
+Tracking first took 381 s for the same 120 frames: MIOpen's default find mode
+picked very slow solvers for the DeepLab segmentation convolutions. The worker
+now sets `MIOPEN_FIND_MODE=FAST` unless set (27× faster on that network, output
+equal to 3e-6 relative).
+
+### Earlier NVIDIA records
 
 A moving-camera test used 80 frames at 30 fps (2.67 seconds), one person and
 the existing RTX 5090 test PC. The installed Windows path completed preparation,
@@ -289,9 +331,10 @@ and four Blender FBX imports retained fixed local finger rotations.
 | Setup logs / retained archives | `.setup/logs/prompthmr-*.log`, `.setup/prompthmr-downloads/` |
 | Native inference | `<project>/prompthmr/inference/<generation>/results.pkl` |
 | Published actors/takes | `<project>/prompthmr/results/<generation>/` |
-| Lock / Windows adaptations / CUDA verification | `installer/prompthmr-runtime-lock.json`, `installer/prompthmr_adapters.py`, `installer/verify_prompthmr.py` |
+| Lock / Windows adaptations / GPU verification | `installer/prompthmr-runtime-lock.json`, `installer/prompthmr_adapters.py`, `installer/verify_prompthmr.py` |
 | Setup implementation | `tools/setup_prompthmr.py` |
 | Camera build / verification | `tools/setup_prompthmr_camera.py`, `installer/prompthmr-camera-lock.json`, `installer/prompthmr_camera_adapters.py`, `installer/verify_prompthmr_camera.py` |
+| Shared AMD ROCm build toolchain | `installer/rocm_build.py`, `installer/rocm-devel-lock.json`, `installer/rocm/`, `.setup/rocm-devel/` |
 | App connector | `mocap/prompthmr_pipeline.py`, `prompthmr_cache.py`, `prompthmr_publish.py`, `prompthmr_scene.py`, `prompthmr_ui.py`, `prompthmr_runtime.py` |
 
 Native inference, derived correction and export generations remain separate.
@@ -301,8 +344,8 @@ Tracking/mask intermediates can be much larger than final motion. Do not delete
 files from saved projects to repair them, or edit a ready runtime in place.
 
 For agent-assisted setup, ask: “Read AGENTS.md and docs/models/PROMPTHMR.md.
-Check Windows C++/CUDA prerequisites, run Setup_PromptHMR.cmd after my required
-license review, verify its CUDA checks and help import the exact model files.
+Check Windows Visual Studio/AMD GPU prerequisites, run Setup_PromptHMR.cmd after my required
+license review, verify its GPU checks and help import the exact model files.
 Preserve the other runtimes, models and projects.” Do not put credentials in chat.
 
 ## License

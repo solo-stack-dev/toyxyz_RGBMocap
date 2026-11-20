@@ -6,7 +6,7 @@ For model-specific files, defaults and workflow, use [docs/models/README.md](doc
 
 For MAMMA runtime installation, native SAM 2/SDF builds or repair, follow
 [docs/MAMMA_AGENT_SETUP.md](docs/MAMMA_AGENT_SETUP.md). It distinguishes automatic
-setup from custom builds and requires actual CUDA verification before registering
+setup from custom builds and requires actual GPU verification before registering
 a manually built environment. For optional PromptHMR setup, its SAM2 build and
 the optional DroidCalib/LieTorch moving-camera build, follow
 [docs/models/PROMPTHMR.md](docs/models/PROMPTHMR.md).

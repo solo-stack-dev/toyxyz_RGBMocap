@@ -1646,7 +1646,7 @@ class MainWindow(PreviewExportWorkspace,PearWorkspace,GemXWorkspace,PromptHMRWor
         elif kind == "diagnostics":
             data = event["result"]
             self.log.append(json.dumps(data, ensure_ascii=False, indent=2))
-            self.hardware_summary = f"{data.get('gpu', 'GPU unavailable')} · RAM {data.get('ram_gib', '?')}GB · CUDA check {'Passed' if data.get('cuda_matmul_verified') else 'Unavailable'}"
+            self.hardware_summary = f"{data.get('gpu', 'GPU unavailable')} · RAM {data.get('ram_gib', '?')}GB · GPU check {'Passed' if data.get('cuda_matmul_verified') else 'Unavailable'}"
             self.status.setText(self.hardware_summary)
         elif kind in {"failed", "blocked"}:
             self.failed = True

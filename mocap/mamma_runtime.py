@@ -10,8 +10,9 @@ import sys
 from .paths import ROOT
 from .storage import atomic_json, sha256
 
-PACKAGES = {'torch': '2.7.1+cu128', 'numpy': '1.26.4', 'scipy': '1.17.1',
-            'smplx': '0.1.28', 'timm': '1.0.30', 'torchvision': '0.22.1+cu128'}
+# AMD fork: PyTorch's ROCm build for Windows (torch.cuda.* is the Radeon GPU).
+PACKAGES = {'torch': '2.14.0+rocm10.1.0', 'numpy': '1.26.4', 'scipy': '1.17.1',
+            'smplx': '0.1.28', 'timm': '1.0.30', 'torchvision': '0.29.0a0+rocm10.1.0'}
 ENGINE_FILES = ('LICENSE', 'segmentation/run_ma_masks.py', 'landmarks/run_ma_2d.py',
                 'optimization/run_ma_3d.py', 'capture/run_ma_cap.py',
                 'landmarks/lib/datasets/vitdet_dataset.py',
@@ -94,7 +95,7 @@ def configure(python, engine, root=ROOT, managed_id=None):
         raise RuntimeError('MAMMA runtime import check failed:\n'+result.stderr[-4000:])
     checked = json.loads(result.stdout.strip().splitlines()[-1])
     if checked['python'][:2] != [3, 11] or checked['packages'] != PACKAGES or not checked['cuda']:
-        raise ValueError('The environment does not match the validated CUDA/Python MAMMA profile: '+str(checked))
+        raise ValueError('The environment does not match the validated ROCm GPU/Python MAMMA profile: '+str(checked))
     entry = dict(version=2, python=str(python), engine=str(engine), license_reviewed=True,
                  packages=PACKAGES, engine_files=snapshot(engine))
     if managed_id:entry.update(version=3,managed_id=managed_id,compute_capability=checked['compute_capability'])

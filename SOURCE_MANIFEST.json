@@ -11,13 +11,13 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 2085,
-      "sha256": "95e785d22a23f008c80986a2ec019b896116abb7eb9c6b37a1453b80b0b334b7"
+      "bytes": 2101,
+      "sha256": "29916dce3be3393b56bc2c9406982645985770da742a2137c5b45514b759e305"
     },
     {
       "path": "AGENTS.md",
-      "bytes": 2938,
-      "sha256": "e0aad5127a24120992e4b04348255d3b35bb2490dfa9e8cfc83d45ec9a7981a4"
+      "bytes": 2937,
+      "sha256": "60ac6998318e607a4173e955026351bbc221deb6de147aca1b659adfa7f8b6e4"
     },
     {
       "path": "LICENSE",
@@ -26,8 +26,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 16673,
-      "sha256": "73ed196f6c8ecdea25f53396ae1f0f4f1286e84a75c08b823282566851827f23"
+      "bytes": 17260,
+      "sha256": "286a3db35c67fc3f0846aa6298ba170a479041fcdcb05072ec5164a70b55e4de"
     },
     {
       "path": "RGBMoCap.cmd",
@@ -36,18 +36,18 @@
     },
     {
       "path": "Setup_GEMX.cmd",
-      "bytes": 937,
-      "sha256": "62d59069b4d612e92d3ff8db5f7cf75c70e0d1b2cb2f02d0112a10eee7ff76b9"
+      "bytes": 941,
+      "sha256": "d6fdf77aa4364d8abbe440b8b431d7512c35f02f8ba31135968d9d8ba9585638"
     },
     {
       "path": "Setup_MAMMA.cmd",
-      "bytes": 993,
-      "sha256": "88497b4d4d25176a713a7eb98b2d84c5097e4d08f35e3aed046e84fcccc01ba4"
+      "bytes": 1146,
+      "sha256": "7f76d7a2167f277ca88cdd302fba7eb34301edc8db34d3cb65cdbcf371ae2b0a"
     },
     {
       "path": "Setup_PromptHMR.cmd",
-      "bytes": 1482,
-      "sha256": "f5c9c05087fe432250d32706032f6c5fcbcb5b87da72a262ff6d58fb0ea6e8eb"
+      "bytes": 1643,
+      "sha256": "e96d0038ab734014363e729f71bed6a24214a2f38512593ede44bb9169ddba52"
     },
     {
       "path": "Setup_SAM31.cmd",
@@ -156,13 +156,13 @@
     },
     {
       "path": "docs/AGENT_GUIDE.md",
-      "bytes": 99207,
-      "sha256": "6f0442df09c9abad51d180cb2d425c08b493bfc52582973062f486e4df6756ef"
+      "bytes": 99984,
+      "sha256": "75c84370aeaa4b47a91c040016d9b66a84777e3d111d0ae5be4c56b6ebc25dfc"
     },
     {
       "path": "docs/BUILD.md",
-      "bytes": 17603,
-      "sha256": "93cd3d33b453d367f944f2fc04f43637e0aee3b14b785dc86fcc7fa6284f34ef"
+      "bytes": 17966,
+      "sha256": "e2c137394d2961b546fa17e5d7bae74a0c4d39aeb169fd39c4253f73f20a8a24"
     },
     {
       "path": "docs/CITATIONS.md",
@@ -171,13 +171,13 @@
     },
     {
       "path": "docs/MAMMA.md",
-      "bytes": 27795,
-      "sha256": "ee416093b3d96bd0a034eef11bff38d39726828df485c9f607477849f4b5cfa4"
+      "bytes": 29570,
+      "sha256": "d8904686a345be08b11f6bae22f371203edcb161d8a7c59fed61f4781757f328"
     },
     {
       "path": "docs/MAMMA_AGENT_SETUP.md",
-      "bytes": 22466,
-      "sha256": "39bd2ad349d37f2efa6246ffd76c345f422ffe5155eea010d4d46c96f1b23851"
+      "bytes": 25392,
+      "sha256": "8fcce06ae4c287dd3426585af360e1a9d12fa50af9e71e0949aed90cdd22a505"
     },
     {
       "path": "docs/PERFORMANCE.md",
@@ -191,8 +191,8 @@
     },
     {
       "path": "docs/USER_GUIDE.md",
-      "bytes": 87462,
-      "sha256": "0e6203a22321bfe4fa2a3db44830771860695b590ad06eeb378dff1b8e8c4864"
+      "bytes": 87713,
+      "sha256": "35e2bad10b8609a04e03751724d0103b16f63c6061ccd002fb4bd32cb2e87228"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -246,8 +246,8 @@
     },
     {
       "path": "docs/models/PROMPTHMR.md",
-      "bytes": 20852,
-      "sha256": "de76056793eefaab35694ba7fbaac3e0b95fb3e63998ff3796c1100c24f787d8"
+      "bytes": 23734,
+      "sha256": "574f9f682ed39c6a04729849f568d4315a298fa39c0031f3d9efa30206c164d6"
     },
     {
       "path": "docs/models/README.md",
@@ -301,8 +301,8 @@
     },
     {
       "path": "gemx_worker_boot.py",
-      "bytes": 298,
-      "sha256": "ea6b4f6cca9b8f7f6c5672321e7d6cde5c35517a01dded95721dc2e1e3c6a1f4"
+      "bytes": 458,
+      "sha256": "caa2ebc9065afe955b974f48c5f84818e74d257d471c608c6ac4c04d89e886b5"
     },
     {
       "path": "install.cmd",
@@ -326,8 +326,8 @@
     },
     {
       "path": "installer/engine.py",
-      "bytes": 18904,
-      "sha256": "5be67c26acc141306b3fd7ce80f74ad3570c6a268ada13cffff187b0707db443"
+      "bytes": 19178,
+      "sha256": "367d2043bdd3367a901276a1f021c8c48b365fe9c959112191caf134a8f8ac4e"
     },
     {
       "path": "installer/external-assets.json",
@@ -346,8 +346,8 @@
     },
     {
       "path": "installer/gemx-runtime-lock.json",
-      "bytes": 23657,
-      "sha256": "0fff0ab861d29f624ea01466b253f54af92afc8eac10cbfdff9c3055c2448e68"
+      "bytes": 22654,
+      "sha256": "f48d000270839b5f4af6f6afe1c2fcedb7f9367cfde327232d4f03cccfe16f65"
     },
     {
       "path": "installer/git-support-lock.json",
@@ -376,13 +376,13 @@
     },
     {
       "path": "installer/mamma-runtime-lock.json",
-      "bytes": 75004,
-      "sha256": "0926bd2cea0b9b5fdfd6f42c82ae8146466f089eac56990e8854df3fabe7d98c"
+      "bytes": 78602,
+      "sha256": "03cc890fed8f29b963039090741cd8bf974278def46a62e1e7efc9b24a2d3295"
     },
     {
       "path": "installer/mamma_adapters.py",
-      "bytes": 5924,
-      "sha256": "b3fc4c012a5e69b99bc87d3f26cfc7344a5cf1ff9ae2873b956bf73bb5a44829"
+      "bytes": 8224,
+      "sha256": "8fbcf0af30cd70c9ac8ef5bfdac4b23e1c5e8110ed4f8feb6bab159689ee1d16"
     },
     {
       "path": "installer/mamma_helpers/speed_crop.py",
@@ -416,28 +416,28 @@
     },
     {
       "path": "installer/prompthmr-camera-lock.json",
-      "bytes": 1169,
-      "sha256": "a32f5c88fc465a0deed9c493792a7ffa688bee6983cfef89c479ab63362e63d2"
+      "bytes": 848,
+      "sha256": "3dfc0ae0cf52f81613ed66eca266613df8a410cea1380f1f185b3fefb4012fcc"
     },
     {
       "path": "installer/prompthmr-runtime-lock.json",
-      "bytes": 85747,
-      "sha256": "968f2579c04d3a7c4b4989a1b3941a245beeb438045b8a328eeb13e8fd5911c7"
+      "bytes": 88899,
+      "sha256": "292ce11017a56ed9a6b44fc8a3feae798f7453c08b1b7e721610b62b87c2edcb"
     },
     {
       "path": "installer/prompthmr_adapters.py",
-      "bytes": 2561,
-      "sha256": "08e1e8fb768ae7e4edf852569d70ae69fde20d2cb89dd81de4ffc2a9ca896e06"
+      "bytes": 3326,
+      "sha256": "84b6bb99dcf25221a5783a68aa67cbd228b12bfe40f2bb94e706dee7f11cc257"
     },
     {
       "path": "installer/prompthmr_camera_adapters.py",
-      "bytes": 2932,
-      "sha256": "c70bdefa7e36af6f6bfbe956dd97ec1fb9431c8d4db247e96d356641487583b5"
+      "bytes": 5767,
+      "sha256": "7d61add28606de28ce44b181855f680b70b2cf72622e46af646f97758b589144"
     },
     {
       "path": "installer/runtime-lock.json",
-      "bytes": 117713,
-      "sha256": "5a3e3bb2e6315b467d0a15a6f6066cf5bab8d98c26ccbfff0413d83b99ace123"
+      "bytes": 125053,
+      "sha256": "f2ed7de4d1eb9e1d6a2150af03713b1c9b5f2a5786f185391c3faa2e48ab7e6c"
     },
     {
       "path": "installer/runtime_sources/antlr4_python3_runtime-4.9.3-py3-none-any/SOURCE_WHEEL.json",
@@ -1141,23 +1141,23 @@
     },
     {
       "path": "installer/verify_gemx.py",
-      "bytes": 2137,
-      "sha256": "8254e2259973e1f28165d2ac0bdfe8292923b8055386b4097099c36b4b1282ef"
+      "bytes": 2054,
+      "sha256": "7deaba27a5b5dc8fe515f6131aecc3aae11169ea466b29b121a8b6b7d88f7aea"
     },
     {
       "path": "installer/verify_mamma.py",
-      "bytes": 3557,
-      "sha256": "eb6ccb88905e686d91ef46449f23644ab539ec890ae5b77bd4f9ce60aa55f454"
+      "bytes": 4438,
+      "sha256": "59aa93c5301037059be791c27a3a7439a4f2689c04a2ac702fa093d3651b7295"
     },
     {
       "path": "installer/verify_prompthmr.py",
-      "bytes": 2905,
-      "sha256": "9fe3b87fbee89b300c42240d48c04610b07f23207e33549f3aff8f6834442499"
+      "bytes": 3604,
+      "sha256": "750d9f7c7ad6e674a55366faed53b3c4cbd53ae4a9f517309d93ec4d649abb72"
     },
     {
       "path": "installer/verify_prompthmr_camera.py",
-      "bytes": 1825,
-      "sha256": "9ed4a92aaa76e4cb47c652baef65fa87a6029bfcd1ae635ad5a315b170e019da"
+      "bytes": 4071,
+      "sha256": "26f6503bd89fe5537fe29e3a04054d8f01c73833fae8d175d022286ad6816c3c"
     },
     {
       "path": "installer/verify_runtime.py",
@@ -1166,13 +1166,13 @@
     },
     {
       "path": "launch_source.py",
-      "bytes": 1517,
-      "sha256": "aeca1cbf79a3cf6c071bba5b2e74a611043d3e80aafcdb2db896ad9c779c3f05"
+      "bytes": 1687,
+      "sha256": "b1ee1828f741e9c9c32f33de8bcc55b5cad37a369865600f3b65dab04270fbe4"
     },
     {
       "path": "mamma_worker_boot.py",
-      "bytes": 1787,
-      "sha256": "dae7d34f846273f2bdf1851943ff3ff34a7de06f278e854cc93646b24749fd40"
+      "bytes": 2048,
+      "sha256": "4a387afbad6e988399fcc7e116696aaeaf48985a490020684cafbf338024cfb8"
     },
     {
       "path": "mocap/__init__.py",
@@ -1191,8 +1191,8 @@
     },
     {
       "path": "mocap/batch_worker.py",
-      "bytes": 6028,
-      "sha256": "9139977eb1ff556d113b3a1e6658c6eb766f7be4a79a21f52d9ed6323e176b75"
+      "bytes": 6042,
+      "sha256": "efd4e3718097b3f54ac51c23203ecf0a204b02c9a6c9f2cc0c37b72af02c6049"
     },
     {
       "path": "mocap/biped_bvh.py",
@@ -1371,8 +1371,8 @@
     },
     {
       "path": "mocap/diagnostics.py",
-      "bytes": 1052,
-      "sha256": "aaeabaf65490d261f0be30b7e5f43340e375f6176bfe5454d3325ce3fb68bf4f"
+      "bytes": 1196,
+      "sha256": "0288c34596145e0d528253f504b02bc0389ba020140137c8da9c7efdc12d9f31"
     },
     {
       "path": "mocap/engines.py",
@@ -1381,8 +1381,8 @@
     },
     {
       "path": "mocap/exmr_backend.py",
-      "bytes": 20709,
-      "sha256": "77c7162093f5bbf9b4dba46287f6542d5069cd3aef24444f531eac94335bd82f"
+      "bytes": 20723,
+      "sha256": "58b20937c8e0be40f050021d010a0655a9cac0e5ebb057da297aacb9c957784c"
     },
     {
       "path": "mocap/exmr_camera.py",
@@ -1496,8 +1496,8 @@
     },
     {
       "path": "mocap/flow_backend.py",
-      "bytes": 29439,
-      "sha256": "27853e22ba019d260ee284cb464f06dfc249ea4e91be40f486d2f945cfeb8f6d"
+      "bytes": 29453,
+      "sha256": "805db0fd349975d1eda4ac81af6c4c7f6082b831b3f80b9f9f48cda8d44aba3d"
     },
     {
       "path": "mocap/flow_camera.py",
@@ -1526,8 +1526,8 @@
     },
     {
       "path": "mocap/flow_hamer.py",
-      "bytes": 11120,
-      "sha256": "b82861ea8496949c3b7d914a4b6eecf6400e61dcc008a188e2b7504c317a3012"
+      "bytes": 11138,
+      "sha256": "8215f88e0cc9ea73989a8db35d8a62774514e16e2cab04a5e7c1721c360fd2be"
     },
     {
       "path": "mocap/flow_hamer_entry.py",
@@ -1636,8 +1636,8 @@
     },
     {
       "path": "mocap/gui.py",
-      "bytes": 120956,
-      "sha256": "7c9dfcffa12adb66c99b67d56e4d00b34d2cae98c0501f6d08f071c9350119b4"
+      "bytes": 120955,
+      "sha256": "7b5cc899158704b32bccc06b6c6207bed3a3940403aaa4273474a79c21fab980"
     },
     {
       "path": "mocap/gvhmr_attention.py",
@@ -1706,8 +1706,8 @@
     },
     {
       "path": "mocap/mamma_manager.py",
-      "bytes": 4527,
-      "sha256": "4cd4307f21dee8c1788bb037064331be2c692b02427d907e738e665b897878fa"
+      "bytes": 4660,
+      "sha256": "9ac0ddbcdcc46dfb4514a54cb46ecf3d929799648e8951a1ed02e4e423bd571b"
     },
     {
       "path": "mocap/mamma_models.py",
@@ -1726,8 +1726,8 @@
     },
     {
       "path": "mocap/mamma_runtime.py",
-      "bytes": 5812,
-      "sha256": "2e69b856b0969aed3b1e34b02130432f35c3fa434d4e669f11e40943aa6d9757"
+      "bytes": 5908,
+      "sha256": "13658cc9a14712a1ab3c791858097d905cb56dea05870bf971dc194fd24ac062"
     },
     {
       "path": "mocap/mamma_sam_frames.py",
@@ -1931,8 +1931,8 @@
     },
     {
       "path": "mocap/pear/worker.py",
-      "bytes": 15022,
-      "sha256": "be8a47cd6db12b975fea99cbed79335078369ea2b83e0bbd67e4f28f5935ce75"
+      "bytes": 15040,
+      "sha256": "36f75b85d5e8c99bdd511c2f3748e77b2934d682ef1bd79cbc7f163aca487c39"
     },
     {
       "path": "mocap/pear_models.py",
@@ -2051,18 +2051,18 @@
     },
     {
       "path": "mocap/prompthmr_camera.py",
-      "bytes": 3712,
-      "sha256": "c01c8d8663075a8c42083bd6567159587903e9b8e112d7806b679530ae77153c"
+      "bytes": 4110,
+      "sha256": "ee60f9b156eefeb2d6d45a18c034a58a8bb91ed96f417d83b22ddd41affb3771"
     },
     {
       "path": "mocap/prompthmr_camera_runtime.py",
-      "bytes": 2593,
-      "sha256": "4ac95a749b8a6c00962f302f6ffe56a192a8eb6d63dcdb421dfe8eb38e4c531e"
+      "bytes": 2859,
+      "sha256": "d7171ea97363719840a8e63390840d7d6e346f1f1366667d7bb4cca70814201d"
     },
     {
       "path": "mocap/prompthmr_manager.py",
-      "bytes": 4401,
-      "sha256": "09e7850cd62760acb35194caf6ea8a8b09d95c6142248a2dbb6d1f37bea1e045"
+      "bytes": 4468,
+      "sha256": "ab1ba140121cf4642c836bfff84444a0ed8636c444452c4db8ddddc758d52d72"
     },
     {
       "path": "mocap/prompthmr_models.py",
@@ -2081,8 +2081,8 @@
     },
     {
       "path": "mocap/prompthmr_runtime.py",
-      "bytes": 3390,
-      "sha256": "3d2daddc130be6c24115e5f14bffe222df1d1364f34c051791cbede3188af8d6"
+      "bytes": 3482,
+      "sha256": "5adc3a8cd99b423f68751fc948d0c955d201ba84fdcb9dbc311174f6de11d7b7"
     },
     {
       "path": "mocap/prompthmr_scene.py",
@@ -2246,13 +2246,13 @@
     },
     {
       "path": "mocap/runtime_registry.py",
-      "bytes": 4846,
-      "sha256": "68ae06b6c230612066591c2380506dae6886b2ccb779d79c938ff14cb9894b0d"
+      "bytes": 4882,
+      "sha256": "156bbd39bce385f3c0304a8c7851dfdf23dc2d3a60ff676b1bb29e9836e1185a"
     },
     {
       "path": "mocap/sam31_discovery.py",
-      "bytes": 13155,
-      "sha256": "7a56352aadd295da891bfe8ee6092045186bd914fe64c0f4aba3b589025f8466"
+      "bytes": 13178,
+      "sha256": "8a7604bad44ff915e07f474031c7b5c1b92c0cb21882b4b77b310044177be44f"
     },
     {
       "path": "mocap/sam31_engine.py",
@@ -2451,8 +2451,8 @@
     },
     {
       "path": "mocap/worker.py",
-      "bytes": 28467,
-      "sha256": "17aa8fe0702554071c70b348eb3caea421c16dfd2051de52e30ade4be14138cf"
+      "bytes": 28495,
+      "sha256": "9abfd20512ed5a5702c68fea9173aba2d41c28b834295ed9e1102bdeb5992940"
     },
     {
       "path": "mocap/worker_progress.py",
@@ -2541,8 +2541,8 @@
     },
     {
       "path": "prompthmr_worker_boot.py",
-      "bytes": 1904,
-      "sha256": "d0f03516f24101cb5749f49e29001023eed0c111b9d36e341cbcf3537c0f1914"
+      "bytes": 2158,
+      "sha256": "b1ef3cd20d1805b517d35a736e216c404537247b8ae65eda1713a376a865bb1f"
     },
     {
       "path": "pyproject.toml",
@@ -13291,18 +13291,18 @@
     },
     {
       "path": "tools/setup_gemx.py",
-      "bytes": 6840,
-      "sha256": "9bfab00e8f31677e5cd6abfc1b4706dfea9a757382b511c01437de8848f91b36"
+      "bytes": 6969,
+      "sha256": "de3329c163505cbf27249a6cb50aea7d6f9e7ee2ba3afee947ac093e77eba959"
     },
     {
       "path": "tools/setup_mamma.py",
-      "bytes": 13387,
-      "sha256": "8826126710640bd686a3d6b9d8f785883bfc3552e17fbd9b71cc33bb8136a087"
+      "bytes": 12432,
+      "sha256": "83c79351f5224f76dc446aa23a86cc86361973b9a6471120b2835a47516b9211"
     },
     {
       "path": "tools/setup_pear.py",
-      "bytes": 5430,
-      "sha256": "9e491a2c63df8843b5004edfbaac16d51793aa4a98301b3d4607197e2f7eb6a7"
+      "bytes": 5577,
+      "sha256": "e419b00dc11bbfeca5cf7a99fdfd2c28f51d5b0b8163cb40dc7a838a29c88a0b"
     },
     {
       "path": "tools/setup_pear_alignment.py",
@@ -13311,18 +13311,18 @@
     },
     {
       "path": "tools/setup_prompthmr.py",
-      "bytes": 9300,
-      "sha256": "067e15c0d637ff0f58dba1690f3b9765f86d1040c12d4f3bb6cdefee7a0267a1"
+      "bytes": 9000,
+      "sha256": "f0ca690493d3cde153eee10918706169bea548f155b7448098830e85ebcd3207"
     },
     {
       "path": "tools/setup_prompthmr_camera.py",
-      "bytes": 7067,
-      "sha256": "e013f504e214b470ff7793e6b530c4a8f7b6f0916aeb89663207126279c32717"
+      "bytes": 6526,
+      "sha256": "d5719f40939a342fbcffe68930b45aa921fcc905331a66aa2d557c54ef286748"
     },
     {
       "path": "tools/setup_sam31.py",
-      "bytes": 4348,
-      "sha256": "741f2276aba2f630870d25328c228ee1b25f4abaed61a8f52240203df0bac484"
+      "bytes": 4477,
+      "sha256": "425366037582a807cf5c37bad729f0ccd2573f3b077ceff6117f47910e3dbc74"
     },
     {
       "path": "tools/setup_unreal_stream.py",
@@ -13453,6 +13453,101 @@
       "path": "worker_boot.py",
       "bytes": 634,
       "sha256": "db78b2b208bfb1920bdd2ff69ad929901ae3a114ed8cf5d5b2ae68e5b4690023"
+    },
+    {
+      "path": "docs/AMD.md",
+      "bytes": 6315,
+      "sha256": "743751ac622a781c347ca2170ae9bb020465c50b8faff9cc7f34c94dfc226566"
+    },
+    {
+      "path": "installer/rocm-devel-lock.json",
+      "bytes": 2088,
+      "sha256": "2754fb90c3d36f5d8e02c3f037f760d2834df39e54b4ab1ec60e6462b61b821c"
+    },
+    {
+      "path": "installer/rocm/hip_cuda_compat.h",
+      "bytes": 4299,
+      "sha256": "31b392cd2e5c2c124cc85370224a6057371ee6b1c2b74b2b7b58f8d36a2c0915"
+    },
+    {
+      "path": "installer/rocm/include/device_launch_parameters.h",
+      "bytes": 199,
+      "sha256": "af3b05db2fc447b141eee3f2154f03193d98017a17dd13db2965390dbf3fb4ca"
+    },
+    {
+      "path": "installer/rocm_build.py",
+      "bytes": 10825,
+      "sha256": "aaa85a5ba8e103450793b975182a5f67e6ad1b197ec736c442e627adcbfcf004"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm-10.1.0.dist-info/METADATA",
+      "bytes": 176,
+      "sha256": "a0a54e531d2ff60059151495ab7f32d2cc0d20c08392d27f0866fd1581d13539"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm-10.1.0.dist-info/RECORD",
+      "bytes": 692,
+      "sha256": "b33639790854ad1df035337c5106f7e40894117fbd7de1a5011d1520db1bd191"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm-10.1.0.dist-info/WHEEL",
+      "bytes": 101,
+      "sha256": "3610c6453b649f0becb2a7e07f179fa3253d0fba2555c319dd3a7b9d511d62d5"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm-10.1.0.dist-info/entry_points.txt",
+      "bytes": 52,
+      "sha256": "010e0c4be9ee9200377336f472ac4ec331bc1d273803418bbed1fcda7b78c02c"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm-10.1.0.dist-info/top_level.txt",
+      "bytes": 9,
+      "sha256": "d75add37b6ff92b5224d7b52238eaa81722229cf98cc4ff7518d7f9e5ca76492"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm_sdk/__init__.py",
+      "bytes": 7172,
+      "sha256": "ed87e36cc153b7811133fb934ff1f018114c394f32a56aa040663ef66c147c3d"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm_sdk/__main__.py",
+      "bytes": 5548,
+      "sha256": "97632b8f6f7b3e9522712296272b805065b7a68c31f3b5323b1c534e967132ef"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm_sdk/_devel.py",
+      "bytes": 22725,
+      "sha256": "1c2968bf0bf1c8ce4615857bd2ccf7e785a53d20c683958265a812a807e37831"
+    },
+    {
+      "path": "installer/runtime_sources/rocm-10.1.0-py3-none-any/rocm_sdk/_dist_info.py",
+      "bytes": 18538,
+      "sha256": "1a275d0b2f2b4e3b69aa08ae8cee9f14d231eedd08e9cc8f3403e64f821f7876"
+    },
+    {
+      "path": "mocap/amd_gpu.py",
+      "bytes": 4179,
+      "sha256": "c78edeca855db42ee8d8b0e76dd8b51c695a8909c0160ee35db32b960c108b47"
+    },
+    {
+      "path": "mocap/soma_rocm.py",
+      "bytes": 1461,
+      "sha256": "30ac78980c78b752a1ede4e79bd2466415e547bc4f6c074ca73d12f4d15339b5"
+    },
+    {
+      "path": "tools/make_rocm_meta_source.py",
+      "bytes": 3221,
+      "sha256": "a92357448f198b38aff747ce1ee4791fc554ada1c71897b2de17c3b5f48e8237"
+    },
+    {
+      "path": "tools/rocm_lock.py",
+      "bytes": 8245,
+      "sha256": "b0eb14da8eb4fdf130b609ad3c28ca645ac2e8d0e3f9d8b7073d0391297953c3"
+    },
+    {
+      "path": "tools/update_source_manifest.py",
+      "bytes": 1568,
+      "sha256": "06270f240049a7125ca99d2e21b167703fb34197216533c6fb2a740c3ead2940"
     }
   ]
 }

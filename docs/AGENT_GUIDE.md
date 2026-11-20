@@ -4,7 +4,7 @@ This guide is for agents helping users operate or modify RGB MoCap. It describes
 
 ## Start and update
 
-- Windows 64-bit, compatible NVIDIA GPU/driver and OpenGL 4.3 are required for the documented inference workflow. Other systems and GPUs were not comprehensively verified; see [validation](VALIDATION.md).
+- This fork targets AMD Radeon GPUs through PyTorch's ROCm build for Windows; read [AMD Radeon build](AMD.md) first. Windows 64-bit, an RX 7900-series GPU (gfx1100) with a current Adrenalin driver and OpenGL 4.3 are required. `torch.cuda.*` and device `"cuda"` address the Radeon GPU under ROCm; `mocap/amd_gpu.py` sets `HIP_VISIBLE_DEVICES` so an integrated Radeon without kernels is never used (symptom otherwise: `CUDA error: invalid kernel file`). Keep the install path short: Windows long paths are usually disabled and ROCm's kernel files nest deep. Change torch pins only with `tools/rocm_lock.py`. Upstream NVIDIA validation records ([validation](VALIDATION.md)) describe the RTX 5090 PC, not this build.
 - In a writable checkout, run `install.cmd` once. It sets up separate pinned profiles for ExMR, FlowHMR and GVHMR and their supported add-ons, PEAR support over the shared runtime, Blender 4.5, FFmpeg and the prebuilt native motion-correction module. It does not install only the selected model's runtime or obtain AI weights/body data. Downloading and disk space are required. Models are obtained separately. Optional MAMMA, PromptHMR and GEM-X have separate setup commands.
 - Run `RGBMoCap.cmd`. Keep its command window open; launch errors, processing messages and app Console output are also sent there, but long messages can be truncated and a saturated output queue can drop messages. Within the GUI, **Help > Check System** checks the system.
 - Base worker commands use explicit `-X utf8`, including isolated `-I` launches. Isolated mode ignores `PYTHONIOENCODING`/`PYTHONUTF8` from the parent environment. Any redirected/discarded text log stream must also specify UTF-8. Keep byte-oriented PEAR IPC unchanged.
@@ -93,10 +93,10 @@ Use **Model Manager** for the selected model and add-ons. Automatic download may
 | Command | Scope | Additional prerequisites |
 | --- | --- | --- |
 | `install.cmd` | Base GUI, ExMR/FlowHMR/GVHMR and supported add-ons, PEAR shared support, Blender, FFmpeg, native correction | See the base installation guide; no PromptHMR/MAMMA native build |
-| `Setup_MAMMA.cmd` | Optional independent MAMMA runtime | VS 2022 C++ tools/Windows SDK, CUDA Toolkit 12.8, provider license review |
+| `Setup_MAMMA.cmd` | Optional independent MAMMA runtime | Visual Studio 2022 or newer C++ tools/Windows SDK, provider license review; setup installs the pinned ROCm compiler into `.setup/rocm-devel/` (`installer/rocm_build.py`) |
 | `Setup_PromptHMR.cmd` | Optional independent PromptHMR runtime | Same build tools, separate provider license review; MAMMA/SDF not required |
-| `Setup_GEMX.cmd` | Optional GEM-X Windows runtime | Reuses the pinned ExMR CPython and compatible CUDA DLLs, keeps its own inference packages, verifies CUDA. No compiler required. |
-| `Setup_SAM31.cmd` | Optional SAM 3.1 Find person tracker for ExMR, FlowHMR and GVHMR on Windows | Base ExMR profile, Git, internet, upstream terms review and NVIDIA CUDA with native bfloat16. Uses pinned wheels and a separate overlay. |
+| `Setup_GEMX.cmd` | Optional GEM-X Windows runtime | Reuses the pinned ExMR CPython, keeps its own ROCm PyTorch and inference packages, verifies the GPU. SOMA runs its PyTorch path (`mocap/soma_rocm.py`) because NVIDIA Warp has no AMD backend. No compiler required. |
+| `Setup_SAM31.cmd` | Optional SAM 3.1 Find person tracker for ExMR, FlowHMR and GVHMR on Windows | Base ExMR profile, Git, internet, upstream terms review and a ROCm GPU with native bfloat16 (RX 7900 series passes). Uses pinned wheels and a separate overlay. |
 | `update.cmd` | Source update and base runtime verification | Close the app and preserve tracked edits; it does not install the optional runtimes |
 
 ### GEM-X support
@@ -104,7 +104,7 @@ Use **Model Manager** for the selected model and add-ons. Automatic download may
 Follow the [GEM-X model guide](models/GEMX.md). Use the app's pinned setup
 and Model Manager. Review the upstream terms before downloading. Keep
 `runtime_exmr/` and `runtime_gemx/` in the same installation. A new setup
-checks the wheel hashes and tests CUDA before registering a generation.
+checks the wheel hashes and tests the GPU before registering a generation.
 `install.cmd` and `update.cmd` keep GEM-X optional.
 
 `mocap/gemx_pipeline.py` publishes a native generation only after the clip,
@@ -144,7 +144,7 @@ Model files are in `<installation>/models/` by default. To reuse a legitimate in
 1. Verify the base installation and ExMR runtime. Review the linked upstream
    terms with the user. Close RGB MoCap, then run `Setup_SAM31.cmd`. Setup
    stages the pinned Meta source and SHA-256-pinned wheels in a separate
-   `runtime_sam31/` overlay and tests native CUDA bfloat16 attention before
+   `runtime_sam31/` overlay and tests native GPU bfloat16 attention before
    activation. It uses the base ExMR Python and Torch. Keep the ExMR pins and
    the locked base runtime registry intact.
 2. In the app, choose ExMR, FlowHMR or GVHMR, then **SAM 3.1** next to
@@ -223,7 +223,7 @@ CSV. Missing and held frame behavior follows the existing export rules.
 Follow [the detailed setup/workflow guide](models/PROMPTHMR.md). It is a
 separate pinned Python 3.11 runtime, not a MAMMA overlay or part of install.cmd.
 Setup_PromptHMR.cmd downloads restricted upstream source, builds SAM2 with
-Visual Studio 2022/CUDA Toolkit 12.8 and verifies actual CUDA operations. It
+Visual Studio 2022 or newer and the pinned ROCm compiler (HIP) and verifies actual GPU operations. It
 reuses standard registered SMPL-X/SMPL bodies, not MAMMA's locked-head body.
 Fixed Camera is the default. Optional Moving Camera uses DroidCalib + Metric3D after a separately verified camera build. Find person is hidden; actors retain one
 shared inferred world. The adapter accepts 4–1,800 working frames at 30 fps and
@@ -236,14 +236,14 @@ for setup before models/tools. The MAMMA and PromptHMR locks share 147 verified
 package download archives (about 3.39 GiB); this saves downloads, not installed
 runtime isolation.
 
-1. Verify base `install.cmd` completed, check the documented C++/CUDA tools and
+1. Verify base `install.cmd` completed, check the documented C++ build tools and
    free space, and close RGB MoCap. Do not install the optional runtime if the
    user only needs ExMR, FlowHMR or GVHMR.
 2. Show the provider license requirement and follow the user's permitted-use
    decision. Run `Setup_PromptHMR.cmd` from the app folder; never bypass its
    license review or overwrite another profile's packages.
 3. Read `.setup/logs/prompthmr-*.log` if setup fails. Verification must exercise
-   SAM2 connected components, torchvision CUDA NMS and native attention; package
+   SAM2 connected components, torchvision GPU NMS and native attention; package
    import or a successful cached inference alone does not validate a GPU build.
 4. Setup registers a successful environment through
    `.setup/prompthmr-runtime.json`; `.setup/prompthmr-install-report.json` records
@@ -257,7 +257,7 @@ runtime isolation.
    for two-person interaction. Confirm both people, shared-world playback and
    original/corrected selection before export. No animated fingers are inferred.
 7. After a GPU architecture change or runtime dependency notice, rerun the same
-   setup and actual CUDA checks. Do not copy arbitrary native modules, edit
+   setup and actual GPU checks. Do not copy arbitrary native modules, edit
    receipts or replace package versions to suppress an error.
 
 Native inference, published actors, corrections and exports have separate
@@ -319,14 +319,14 @@ until the user explicitly reconstructs. Original and
 corrected native actors feed the usual contact editing and FBX paths. See
 [MAMMA.md](MAMMA.md) for the exact environment, registered assets, scale/world
 assumptions and adapter limits. The optional setup downloads official restricted source and builds native
-modules locally; Visual Studio 2022 C++ Build Tools and CUDA Toolkit 12.8 are
+modules locally with AMD's ROCm compiler (HIP), which setup installs; Visual Studio 2022 or newer C++ Build Tools are
 prerequisites. Model Manager shows its runtime readiness and setup instructions.
 Do not claim clean-Windows or other-GPU validation for MAMMA. MAMMA uses SAM 2.1 masks. Keep restricted upstream code, weights and derived bodies private.
 
 For prerequisite checks, automatic setup, independent SAM 2/SDF builds, kernel
 verification, registration and rollback, use the
 [MAMMA agent setup runbook](MAMMA_AGENT_SETUP.md). Registration alone does not
-validate actual native CUDA operations. Do not overwrite a working runtime to
+validate actual native GPU operations. Do not overwrite a working runtime to
 test a new native module, or use cached inference as evidence of a new build.
 
 MAMMA's SAM 2.1 input uses `mocap/mamma_sam_frames.py` to decode the already

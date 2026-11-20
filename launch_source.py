@@ -24,6 +24,9 @@ with app_lock(root):
                 raise ValueError('Installed dependencies do not match this source version.')
     except (OSError,KeyError,ValueError) as exc:
         raise SystemExit('Run install.cmd before launching: '+str(exc)) from None
+    # AMD fork: expose only the Radeon GPU that the ROCm kernels cover.
+    from mocap.amd_gpu import ensure_visible_device
+    ensure_visible_device(root,sys.executable)
     from mocap.runtime_registry import activate
     activate(root,'gui')
     from app import main
